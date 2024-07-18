@@ -1,0 +1,83 @@
+.active { /* 그냥 Link가 아니라 NavLink로 된 것들 */
+  background-color: lightseagreen;
+}
+.logo {
+  height: 30px;
+  margin-right: 10px; /* Space between the logo and the text */
+}
+
+nav{
+  background-color: rgb(255, 255, 255);
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.1);
+}
+nav ul{
+  width: 100%; /* it span the full width of its container */
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+nav li{
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+nav a{
+  height: 100%;
+  padding: 0 30px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: black;
+}
+nav a:not(.active):not(.title):hover { /* active, title 아닌 것만 마우스오버했을 때 배경색 변경 */
+  background-color: rgb(32, 212, 158);
+}
+nav li:first-child{ /* Website logo 표시를 왼쪽에 위치시키기 위함*/
+  margin-right: auto;
+}
+.title{
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.sidebar{
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 250px;
+  z-index: 999; /* always above everything else */
+  background-color: rgba(255, 255, 255, 0.316); /* white로는 blur 효과 못냄 */
+  backdrop-filter: blur(10px);
+  box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.sidebar li{
+  width: 100%;
+}
+.sidebar a{
+  width: 100%;
+}
+
+.menu-button{
+  display: none;
+}
+
+@media(max-width: 600px){ /* want the links to be invisible on devices that are thinner than 600pixels*/
+  .hideOnMobile{
+    display: none;
+  }
+  .menu-button{
+    display: block;
+  }
+}
+@media(max-width: 500px){ 
+  .sidebar{
+    width: 100%;
+  }
+}
