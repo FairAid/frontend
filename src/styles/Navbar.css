@@ -1,0 +1,34 @@
+.logo-img {
+    width: 40px;
+    margin-right: 8px;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    background-color: #ddeaea;
+    padding: 20px;
+    align-items: center;
+    margin:0;
+
+}
+
+ul li a{
+    margin-left: 60px;
+    text-decoration: none;
+    color: #221d1d;
+    padding: 20px;
+    font-weight: bold;
+}
+
+ul li a:hover{
+    /* color: #ff6038; */
+    color: white;
+}
+
+.Name {
+    font-size: 22px;
+    font-weight:600;
+    margin-right: 100px;
+}
