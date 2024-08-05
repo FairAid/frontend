@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const useAuth = () => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
+  const [signer, setSigner] = useState(null);
   const navigate = useNavigate();
 
   const isAuth = async () => {
@@ -20,6 +21,7 @@ const useAuth = () => {
         const signer = await provider.getSigner();
         const address = await signer.getAddress();
         setUser(address);
+        setSigner(signer);
         setAuth(true);
       } else {
         setAuth(false);
@@ -39,6 +41,7 @@ const useAuth = () => {
           // User disconnected from MetaMask
           setAuth(false);
           setUser(null);
+          setSigner(null);
           navigate('/'); // Redirect to base page
         } else {
           // User changed their account
@@ -60,6 +63,8 @@ const useAuth = () => {
   return {
     auth,
     user,
+    signer,
+    setSigner,
     setAuth,
     setUser,
   };

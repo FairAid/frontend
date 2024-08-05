@@ -17,6 +17,12 @@ function AuthNavbar(props) {
                         FairAid
                     </li>
                     <li>
+                        <Link to="/">Home</Link>
+                    </li>
+                    <li>
+                        <Link to="/profile">Profile</Link>
+                    </li>
+                    <li>
                         <MetaMask />
                     </li>
                 </ul>
