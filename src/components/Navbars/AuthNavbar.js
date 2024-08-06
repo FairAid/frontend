@@ -1,7 +1,7 @@
 import react from "react";
-import "../App.css";
-import "../styles/Navbar.css";
-import MetaMask from "../MetaMask";
+import "../../App.css";
+import "../../styles/Navbar.css";
+import MetaMask from "../../MetaMask";
 import { Outlet, Link } from "react-router-dom";
 
 

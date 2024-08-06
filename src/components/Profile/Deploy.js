@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { ethers } from "ethers";
-import useAuth from './UseAuth';
+import useAuth from '../Auth/UseAuth';
 
-const AdminPage = () => {
+const Deploy = () => {
     const [deployedContractAddress, setDeployedContractAddress] = useState('');
     const [isDeploying, setIsDeploying] = useState(false);
     const { signer } = useAuth(); // Use the signer from useAuth
@@ -43,8 +43,7 @@ const AdminPage = () => {
     };
 
     return (
-        <div>
-            <h1>Admin Page</h1>
+        <>
             {deployedContractAddress ? (
                 <button onClick={deployContract} disabled={isDeploying}>
                     {isDeploying ? 'Deploying Contract...' : 'Deploy again'}
@@ -54,9 +53,9 @@ const AdminPage = () => {
                     {isDeploying ? 'Deploying Contract...' : 'Deploy Contract'}
                 </button>  
             )}
-        </div>
+        </>
     );
 };
 
-export default AdminPage;
+export default Deploy;
 

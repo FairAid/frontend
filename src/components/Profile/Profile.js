@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { useAuthContext } from './AuthProvider';
+import { useAuthContext } from '../Auth/AuthProvider';
 import AdminPage from './AdminPage';
 import UserPage from './UserPage';
 

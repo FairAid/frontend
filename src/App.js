@@ -4,11 +4,11 @@ import Home from './components/Home';
 import About from './components/About';
 import Offices from './components/Offices';
 import VerifyID from './components/VerifyID';
-import Profile from './components/Profile';
-import Navbar from './components/Navbar';
-import NotAuthNavbar from './components/AuthNavbar';
-import { AuthProvider, useAuthContext } from './components/AuthProvider';
-import PrivateRoute from './components/PrivateRoute';
+import Profile from './components/Profile/Profile';
+import Navbar from './components/Navbars/Navbar';
+import NotAuthNavbar from './components/Navbars/AuthNavbar';
+import { AuthProvider, useAuthContext } from './components/Auth/AuthProvider';
+import PrivateRoute from './components/Auth/PrivateRoute';
 import MetaMask from './MetaMask';
 
 const AppRoutes = () => {

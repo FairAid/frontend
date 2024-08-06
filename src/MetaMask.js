@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from './components/AuthProvider';
+import { useAuthContext } from './components/Auth/AuthProvider';
 import "./App.css";
 
 const MetaMask = () => {
