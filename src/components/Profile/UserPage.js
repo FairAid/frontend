@@ -1,54 +1,51 @@
 import React, { useState } from 'react';
 import useAuth from '../Auth/UseAuth';
 import { createHash } from 'crypto-browserify';
-import forge from 'node-forge';
+import EC from 'elliptic';
+import CryptoJS from 'crypto-js';
 import '../../App.css';
 
-const UserPage = () => {
-  const idJson = {
-      "name": "FairAid DID",
-      "image": "ipfs://Qm... (link to image)",
-      "pubkey": "0x546742249871",
-      "attributes": {
-          "Name": "Alice",
-          "Place of birth": "Russia",
-          "Issued country": "South Korea",
-          "Issued authority": "Immigration office #125",
-          "Date of birth": "1995.02.16",
-          "Passport number": "35678522",
-          "Sex": "F",
-          "Registration address": "South Korea, Seoul, Green street, 15",
-          "Date of issue": "2024.02.15",
-          "Date of expiry": "2027.02.15"
-      }
-  };
+const ec = new EC.ec('p256');
 
+const UserPage = () => {
   const { user } = useAuth();
   const [seedPhrase, setSeedPhrase] = useState('');
   const [encryptedData, setEncryptedData] = useState({});
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
-  const [publicKeyPem, setPublicKeyPem] = useState('');
-  const [privateKeyPem, setPrivateKeyPem] = useState('');
+  const [publicKeyHex, setPublicKeyHex] = useState('');
+  const [privateKeyHex, setPrivateKeyHex] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  const idJson = {
+    "name": "FairAid DID",
+    "image": "ipfs://Qm... (link to image)",
+    "pubkey": "0x546742249871",
+    "attributes": {
+      "Name": "Alice",
+      "Place of birth": "Russia",
+      "Issued country": "South Korea",
+      "Issued authority": "Immigration office #125",
+      "Date of birth": "1995.02.16",
+      "Passport number": "35678522",
+      "Sex": "F",
+      "Registration address": "South Korea, Seoul, Green street, 15",
+      "Date of issue": "2024.02.15",
+      "Date of expiry": "2027.02.15"
+    }
+  };
+
   const generateKeyPairFromSeed = (seed) => {
-    const hash = createHash('sha256').update(seed).digest();
-    const rng = forge.random.createInstance();
-    rng.seedFileSync = () => hash;
-    const keyPair = forge.pki.rsa.generateKeyPair({
-      bits: 2048,
-      e: 0x10001,
-      workerScript: 'prime.worker.js',
-      rng: rng,
-    });
+    const hash = createHash('sha256').update(seed).digest('hex');
+    const keyPair = ec.keyFromPrivate(hash);
     return keyPair;
   };
 
   const encryptData = (data, publicKey) => {
     const encryptValue = (value) => {
-      const encrypted = publicKey.encrypt(forge.util.encodeUtf8(value), 'RSA-OAEP');
-      return forge.util.encode64(encrypted);
+      const sharedKey = keyPair.derive(publicKey).toString(16);
+      const encrypted = CryptoJS.AES.encrypt(value, sharedKey).toString();
+      return encrypted;
     };
 
     const encryptedData = {};
@@ -64,9 +61,9 @@ const UserPage = () => {
 
   const decryptData = (data, privateKey) => {
     const decryptValue = (value) => {
-      const encrypted = forge.util.decode64(value);
-      const decrypted = privateKey.decrypt(encrypted, 'RSA-OAEP');
-      return forge.util.decodeUtf8(decrypted);
+      const sharedKey = privateKey.derive(keyPair.getPublic()).toString(16);
+      const decrypted = CryptoJS.AES.decrypt(value, sharedKey).toString(CryptoJS.enc.Utf8);
+      return decrypted;
     };
 
     const decryptedData = {};
@@ -89,23 +86,23 @@ const UserPage = () => {
     const keypair = generateKeyPairFromSeed(seedPhrase);
     setKeyPair(keypair);
 
-    const publicKeyPem = forge.pki.publicKeyToPem(keypair.publicKey);
-    const privateKeyPem = forge.pki.privateKeyToPem(keypair.privateKey);
-    setPublicKeyPem(publicKeyPem);
-    setPrivateKeyPem(privateKeyPem);
+    const publicKeyHex = keypair.getPublic('hex');
+    const privateKeyHex = keypair.getPrivate('hex');
+    setPublicKeyHex(publicKeyHex);
+    setPrivateKeyHex(privateKeyHex);
 
     setShowModal(false);
   };
 
   const handleEncrypt = () => {
-    if (!keyPair) return;
-    const encrypted = encryptData(idJson, keyPair.publicKey);
+    if (!keyPair || !idJson) return;
+    const encrypted = encryptData(idJson, keyPair.getPublic());
     setEncryptedData(encrypted);
   };
 
   const handleDecrypt = () => {
-    if (!keyPair) return;
-    const decrypted = decryptData(encryptedData, keyPair.privateKey);
+    if (!keyPair || !idJson) return;
+    const decrypted = decryptData(encryptedData, keyPair);
     setDecryptedData(decrypted);
   };
 
@@ -114,19 +111,19 @@ const UserPage = () => {
       <h1>Encrypt/Decrypt Data</h1>
       <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
       <button onClick={handleEncrypt} disabled={!keyPair}>Encrypt Data</button>
-      <button onClick={handleDecrypt} disabled={!Object.keys(encryptedData).length}>Decrypt Data</button>
+      <button onClick={handleDecrypt} disabled={!keyPair}>Decrypt Data</button>
 
-      {publicKeyPem && (
+      {publicKeyHex && (
         <div>
           <h2>Public Key</h2>
-          <pre>{publicKeyPem}</pre>
+          <pre>{publicKeyHex}</pre>
         </div>
       )}
 
-      {privateKeyPem && (
+      {privateKeyHex && (
         <div>
           <h2>Private Key</h2>
-          <pre>{privateKeyPem}</pre>
+          <pre>{privateKeyHex}</pre>
         </div>
       )}
 

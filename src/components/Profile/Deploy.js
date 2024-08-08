@@ -34,7 +34,7 @@ const Deploy = () => {
 
             setDeployedContractAddress(contract.target);
             setIsDeploying(false);
-            alert(`Contract deployed at: ${deployedContractAddress}`);
+            alert("Contract deployed at: " +  deployedContractAddress);
             console.log(contract.target);
         } catch (error) {
             setIsDeploying(false);
