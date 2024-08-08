@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useAuth from '../Auth/UseAuth';
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
@@ -16,24 +16,23 @@ const UserPage = () => {
   const [publicKeyHex, setPublicKeyHex] = useState('');
   const [privateKeyHex, setPrivateKeyHex] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [idJson, setIdJson] = useState(null);
+  const [fetchError, setFetchError] = useState('');
+  const [decryptError, setDecryptError] = useState('');
 
-  const idJson = {
-    "name": "FairAid DID",
-    "image": "ipfs://Qm... (link to image)",
-    "pubkey": "0x546742249871",
-    "attributes": {
-      "Name": "Alice",
-      "Place of birth": "Russia",
-      "Issued country": "South Korea",
-      "Issued authority": "Immigration office #125",
-      "Date of birth": "1995.02.16",
-      "Passport number": "35678522",
-      "Sex": "F",
-      "Registration address": "South Korea, Seoul, Green street, 15",
-      "Date of issue": "2024.02.15",
-      "Date of expiry": "2027.02.15"
-    }
-  };
+  useEffect(() => {
+    const fetchJsonFromIPFS = async () => {
+      try {
+        const response = await fetch('https://ipfs.io/ipfs/QmPGR1234AcmtQ2WUicKe9qZvFup6saDY8iccCvx1MYa5j');
+        const jsonData = await response.json();
+        setIdJson(jsonData);
+      } catch (error) {
+        console.error('Error fetching JSON from IPFS:', error);
+      }
+    };
+
+    fetchJsonFromIPFS();
+  }, []);
 
   const generateKeyPairFromSeed = (seed) => {
     const hash = createHash('sha256').update(seed).digest('hex');
@@ -41,40 +40,31 @@ const UserPage = () => {
     return keyPair;
   };
 
-  const encryptData = (data, publicKey) => {
-    const encryptValue = (value) => {
-      const sharedKey = keyPair.derive(publicKey).toString(16);
-      const encrypted = CryptoJS.AES.encrypt(value, sharedKey).toString();
-      return encrypted;
-    };
-
-    const encryptedData = {};
-    for (const key in data) {
-      if (typeof data[key] === 'object' && data[key] !== null) {
-        encryptedData[key] = encryptData(data[key], publicKey);
-      } else {
-        encryptedData[key] = encryptValue(data[key]);
-      }
-    }
-    return encryptedData;
-  };
-
   const decryptData = (data, privateKey) => {
-    const decryptValue = (value) => {
-      const sharedKey = privateKey.derive(keyPair.getPublic()).toString(16);
-      const decrypted = CryptoJS.AES.decrypt(value, sharedKey).toString(CryptoJS.enc.Utf8);
-      return decrypted;
-    };
+    try {
+      const decryptValue = (value) => {
+        const sharedKey = privateKey.derive(keyPair.getPublic()).toString(16);
+        const decrypted = CryptoJS.AES.decrypt(value, sharedKey).toString(CryptoJS.enc.Utf8);
+        return decrypted;
+      };
 
-    const decryptedData = {};
-    for (const key in data) {
-      if (typeof data[key] === 'object' && data[key] !== null) {
-        decryptedData[key] = decryptData(data[key], privateKey);
-      } else {
-        decryptedData[key] = decryptValue(data[key]);
+      const decryptedData = {};
+      for (const key in data) {
+        if (typeof data[key] === 'object' && data[key] !== null) {
+          decryptedData[key] = decryptData(data[key], privateKey);
+        } else {
+          decryptedData[key] = decryptValue(data[key]);
+        }
       }
+      return decryptedData;
+    } catch (error) {
+      console.error('Error decrypting data:', error);
+      setDecryptError('Cannot decrypt data using this key. Please enter the correct seed phrase.');
+      setTimeout(() => {
+        setDecryptError('');
+      }, 10000);
+      return null;
     }
-    return decryptedData;
   };
 
   const handleGenerateKeyPair = () => {
@@ -94,24 +84,36 @@ const UserPage = () => {
     setShowModal(false);
   };
 
-  const handleEncrypt = () => {
-    if (!keyPair || !idJson) return;
-    const encrypted = encryptData(idJson, keyPair.getPublic());
-    setEncryptedData(encrypted);
-  };
-
   const handleDecrypt = () => {
-    if (!keyPair || !idJson) return;
-    const decrypted = decryptData(encryptedData, keyPair);
-    setDecryptedData(decrypted);
+    if (!keyPair) return;
+
+    if (!idJson) {
+      setFetchError('Error fetching JSON from IPFS. Please try again later.');
+      setTimeout(() => {
+        setFetchError('');
+      }, 10000)
+      return;
+    }
+
+    const decrypted = decryptData(idJson, keyPair);
+    if (decrypted) {
+      setDecryptedData(decrypted);
+      setDecryptError(''); // Clear any previous decrypt error
+    }
   };
 
   return (
     <div>
-      <h1>Encrypt/Decrypt Data</h1>
+      <h1>Decrypt Data</h1>
       <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
-      <button onClick={handleEncrypt} disabled={!keyPair}>Encrypt Data</button>
       <button onClick={handleDecrypt} disabled={!keyPair}>Decrypt Data</button>
+
+      {(fetchError || decryptError) && (
+        <div className="error-popup">
+          {fetchError && <p>{fetchError}</p>}
+          {decryptError && <p>{decryptError}</p>}
+        </div>
+      )}
 
       {publicKeyHex && (
         <div>

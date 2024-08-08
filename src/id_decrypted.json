@@ -1,8 +1,8 @@
 {
   "name": "FairAid DID",
-  "image": "ipfs://Qm... (link to image)",
-  "pubkey": "0x546742249871",
+  "pubkey": "048cebbcc692a05c8451b171e627dc7a70e7125a429c2f36c08d2c2ddf731c1e3069fdab6957946c9656801c66a3331c3921856d31ca5cb88abb1a7b2d055eb4fa",
   "attributes": {
+    "image": "https://ipfs.io/ipfs/QmYjrhc4PwSmTjB629fXsiYEGpkF4xoFNtVT4hh4geji9M",
     "Name": "Alice",
     "Place of birth": "Russia",
     "Issued country": "South Korea",
