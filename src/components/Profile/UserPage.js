@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import useAuth from '../Auth/UseAuth';
-import { Buffer } from 'buffer';
-import { createHash, publicEncrypt, privateDecrypt } from 'crypto-browserify';
+import { createHash } from 'crypto-browserify';
 import forge from 'node-forge';
+import '../../App.css';
 
 const UserPage = () => {
   const idJson = {
@@ -24,12 +24,13 @@ const UserPage = () => {
   };
 
   const { user } = useAuth();
-  const seedPhrase = "JSYT6573Gndnhs";
+  const [seedPhrase, setSeedPhrase] = useState('');
   const [encryptedData, setEncryptedData] = useState({});
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
   const [publicKeyPem, setPublicKeyPem] = useState('');
   const [privateKeyPem, setPrivateKeyPem] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const generateKeyPairFromSeed = (seed) => {
     const hash = createHash('sha256').update(seed).digest();
@@ -52,7 +53,7 @@ const UserPage = () => {
 
     const encryptedData = {};
     for (const key in data) {
-      if (typeof data[key] === 'object') {
+      if (typeof data[key] === 'object' && data[key] !== null) {
         encryptedData[key] = encryptData(data[key], publicKey);
       } else {
         encryptedData[key] = encryptValue(data[key]);
@@ -70,7 +71,7 @@ const UserPage = () => {
 
     const decryptedData = {};
     for (const key in data) {
-      if (typeof data[key] === 'object') {
+      if (typeof data[key] === 'object' && data[key] !== null) {
         decryptedData[key] = decryptData(data[key], privateKey);
       } else {
         decryptedData[key] = decryptValue(data[key]);
@@ -80,6 +81,11 @@ const UserPage = () => {
   };
 
   const handleGenerateKeyPair = () => {
+    setShowModal(true);
+  };
+
+  const handleSeedPhraseSubmit = () => {
+    if (!seedPhrase) return;
     const keypair = generateKeyPairFromSeed(seedPhrase);
     setKeyPair(keypair);
 
@@ -87,6 +93,8 @@ const UserPage = () => {
     const privateKeyPem = forge.pki.privateKeyToPem(keypair.privateKey);
     setPublicKeyPem(publicKeyPem);
     setPrivateKeyPem(privateKeyPem);
+
+    setShowModal(false);
   };
 
   const handleEncrypt = () => {
@@ -108,7 +116,7 @@ const UserPage = () => {
       <button onClick={handleEncrypt} disabled={!keyPair}>Encrypt Data</button>
       <button onClick={handleDecrypt} disabled={!Object.keys(encryptedData).length}>Decrypt Data</button>
 
-      {/* {publicKeyPem && (
+      {publicKeyPem && (
         <div>
           <h2>Public Key</h2>
           <pre>{publicKeyPem}</pre>
@@ -120,7 +128,7 @@ const UserPage = () => {
           <h2>Private Key</h2>
           <pre>{privateKeyPem}</pre>
         </div>
-      )} */}
+      )}
 
       {Object.keys(encryptedData).length > 0 && (
         <div>
@@ -133,6 +141,20 @@ const UserPage = () => {
         <div>
           <h2>Decrypted Data</h2>
           <pre>{JSON.stringify(decryptedData, null, 2)}</pre>
+        </div>
+      )}
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Enter Seed Phrase</h2>
+            <input 
+              type="text" 
+              value={seedPhrase} 
+              onChange={(e) => setSeedPhrase(e.target.value)} 
+            />
+            <button onClick={handleSeedPhraseSubmit}>Submit</button>
+          </div>
         </div>
       )}
     </div>
