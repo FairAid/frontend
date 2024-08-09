@@ -7,7 +7,7 @@ const AdminPage = () => {
             <div style={{ float: "left", padding: '20px', fontSize: '30px' }}>
                 <Deploy />
             </div>
-            <div style={{ float: "right", padding: '20px', fontSize: '30px' }}>
+            <div style={{ float: "left", padding: '20px', fontSize: '15px' }}>
                 <Mint />
             </div>
         </div>

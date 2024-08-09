@@ -1,3 +1,5 @@
+// seed: myseed 
+// HEX pubkey: 048cebbcc692a05c8451b171e627dc7a70e7125a429c2f36c08d2c2ddf731c1e3069fdab6957946c9656801c66a3331c3921856d31ca5cb88abb1a7b2d055eb4fa
 import React, { useState, useEffect } from 'react';
 import useAuth from '../Auth/UseAuth';
 import { createHash } from 'crypto-browserify';
@@ -11,7 +13,7 @@ const ec = new EC.ec('p256');
 const UserPage = () => {
   const { user } = useAuth();
   const [seedPhrase, setSeedPhrase] = useState('');
-  // const [encryptedData, setEncryptedData] = useState({});
+  const [encryptedData, setEncryptedData] = useState({});
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -19,10 +21,12 @@ const UserPage = () => {
   const [fetchError, setFetchError] = useState('');
   const [decryptError, setDecryptError] = useState('');
 
+  const publicKeyHex = "04ed577161a2083139b081b1b3fc47ce425e9fad6c2cc6d07068300428662365fba033427bcd9db3af460468cdf438b6e12cd03fa8bea5b9c35bc73a458801b971"
+
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
       try {
-        const response = await fetch('https://ipfs.io/ipfs/QmYw5Aw4dCHZjcA8LLbY8tkmgieJw3Z8Y4bsGPueavejQz');
+        const response = await fetch('https://ipfs.io/ipfs/QmTN4eMq8wXzTDwoimt9sY79CCUjHtAhTJqEfmiYL8VHie');
         const jsonData = await response.json();
         setIdJson(jsonData);
       } catch (error) {
@@ -39,10 +43,11 @@ const UserPage = () => {
     return keyPair;
   };
 
-  const decryptData = (data, privateKey) => {
+  const decryptData = (data, publicKey) => {
     try {
       const decryptValue = (value) => {
-        const sharedKey = privateKey.derive(keyPair.getPublic()).toString(16);
+        const sharedKey = keyPair.derive(publicKey).toString(16);
+        // const sharedKey = privateKey.derive(keyPair.getPublic()).toString(16);
         const decrypted = CryptoJS.AES.decrypt(value, sharedKey).toString(CryptoJS.enc.Utf8);
         return decrypted;
       };
@@ -50,7 +55,7 @@ const UserPage = () => {
       const decryptedData = {};
       for (const key in data) {
         if (typeof data[key] === 'object' && data[key] !== null) {
-          decryptedData[key] = decryptData(data[key], privateKey);
+          decryptedData[key] = decryptData(data[key], publicKey);
         } else {
           decryptedData[key] = decryptValue(data[key]);
         }
@@ -89,11 +94,12 @@ const UserPage = () => {
       return;
     }
 
-    const decrypted = decryptData(idJson, keyPair);
+    const decodedPubkey = ec.keyFromPublic(publicKeyHex, 'hex').getPublic();
+    const decrypted = decryptData(idJson, decodedPubkey);
     if (decrypted) {
       setDecryptedData(decrypted);
+      console.log("Public key: ", keyPair.getPublic().encode('hex'));
       setDecryptError(''); // Clear any previous decrypt error
-      console.log("Type of keyPair.getPublic(): ", typeof keyPair.getPublic('hex'));
     }
   };
 
