@@ -4,17 +4,16 @@ import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
 import '../../App.css';
+import '../../styles/UserPage.css';
 
 const ec = new EC.ec('p256');
 
 const UserPage = () => {
   const { user } = useAuth();
   const [seedPhrase, setSeedPhrase] = useState('');
-  const [encryptedData, setEncryptedData] = useState({});
+  // const [encryptedData, setEncryptedData] = useState({});
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
-  const [publicKeyHex, setPublicKeyHex] = useState('');
-  const [privateKeyHex, setPrivateKeyHex] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
   const [fetchError, setFetchError] = useState('');
@@ -23,7 +22,7 @@ const UserPage = () => {
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
       try {
-        const response = await fetch('https://ipfs.io/ipfs/QmPGR1234AcmtQ2WUicKe9qZvFup6saDY8iccCvx1MYa5j');
+        const response = await fetch('https://ipfs.io/ipfs/QmYw5Aw4dCHZjcA8LLbY8tkmgieJw3Z8Y4bsGPueavejQz');
         const jsonData = await response.json();
         setIdJson(jsonData);
       } catch (error) {
@@ -62,7 +61,7 @@ const UserPage = () => {
       setDecryptError('Cannot decrypt data using this key. Please enter the correct seed phrase.');
       setTimeout(() => {
         setDecryptError('');
-      }, 10000);
+      }, 15000); // Clear the decryptError after 15 seconds
       return null;
     }
   };
@@ -76,11 +75,6 @@ const UserPage = () => {
     const keypair = generateKeyPairFromSeed(seedPhrase);
     setKeyPair(keypair);
 
-    const publicKeyHex = keypair.getPublic('hex');
-    const privateKeyHex = keypair.getPrivate('hex');
-    setPublicKeyHex(publicKeyHex);
-    setPrivateKeyHex(privateKeyHex);
-
     setShowModal(false);
   };
 
@@ -91,7 +85,7 @@ const UserPage = () => {
       setFetchError('Error fetching JSON from IPFS. Please try again later.');
       setTimeout(() => {
         setFetchError('');
-      }, 10000)
+      }, 15000); // Clear the fetchError after 15 seconds
       return;
     }
 
@@ -99,14 +93,15 @@ const UserPage = () => {
     if (decrypted) {
       setDecryptedData(decrypted);
       setDecryptError(''); // Clear any previous decrypt error
+      console.log("Type of keyPair.getPublic(): ", typeof keyPair.getPublic('hex'));
     }
   };
 
   return (
     <div>
-      <h1>Decrypt Data</h1>
+      <h1>Manage FairAid ID</h1>
       <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
-      <button onClick={handleDecrypt} disabled={!keyPair}>Decrypt Data</button>
+      <button onClick={handleDecrypt} disabled={!keyPair}>Open ID</button>
 
       {(fetchError || decryptError) && (
         <div className="error-popup">
@@ -115,31 +110,21 @@ const UserPage = () => {
         </div>
       )}
 
-      {publicKeyHex && (
-        <div>
-          <h2>Public Key</h2>
-          <pre>{publicKeyHex}</pre>
-        </div>
-      )}
-
-      {privateKeyHex && (
-        <div>
-          <h2>Private Key</h2>
-          <pre>{privateKeyHex}</pre>
-        </div>
-      )}
-
-      {Object.keys(encryptedData).length > 0 && (
-        <div>
-          <h2>Encrypted Data</h2>
-          <pre>{JSON.stringify(encryptedData, null, 2)}</pre>
-        </div>
-      )}
-
       {decryptedData && (
-        <div>
-          <h2>Decrypted Data</h2>
-          <pre>{JSON.stringify(decryptedData, null, 2)}</pre>
+        <div className="id-card">
+          <h2>ID Card</h2>
+          <div className="id-card-content">
+            <p><strong>Name:</strong> {decryptedData.attributes.Name}</p>
+            <p><strong>Place of birth:</strong> {decryptedData.attributes["Place of birth"]}</p>
+            <p><strong>Issued country:</strong> {decryptedData.attributes["Issued country"]}</p>
+            <p><strong>Issued authority:</strong> {decryptedData.attributes["Issued authority"]}</p>
+            <p><strong>Date of birth:</strong> {decryptedData.attributes["Date of birth"]}</p>
+            <p><strong>Passport number:</strong> {decryptedData.attributes["Passport number"]}</p>
+            <p><strong>Sex:</strong> {decryptedData.attributes.Sex}</p>
+            <p><strong>Registration address:</strong> {decryptedData.attributes["Registration address"]}</p>
+            <p><strong>Date of issue:</strong> {decryptedData.attributes["Date of issue"]}</p>
+            <p><strong>Date of expiry:</strong> {decryptedData.attributes["Date of expiry"]}</p>
+          </div>
         </div>
       )}
 
