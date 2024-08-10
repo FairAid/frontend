@@ -1,0 +1,16 @@
+{
+    "name": "FairAid DID",
+    "image": "https://ipfs.io/ipfs/QmYjrhc4PwSmTjB629fXsiYEGpkF4xoFNtVT4hh4geji9M",
+    "attributes": {
+      "Name": "Bob",
+      "Place of birth": "Kazakhstan",
+      "Issued country": "South Korea",
+      "Issued authority": "Immigration office #69",
+      "Date of birth": "2002.07.26",
+      "Passport number": "468911225",
+      "Sex": "M",
+      "Registration address": "South Korea, Seoul, Namsan street, 78",
+      "Date of issue": "2023.01.05",
+      "Date of expiry": "2026.01.05"
+    }
+}

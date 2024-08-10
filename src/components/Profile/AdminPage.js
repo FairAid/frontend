@@ -1,9 +1,7 @@
 import Deploy from "./Deploy";
 import Mint from "./Mint";
-import useAuth from '../Auth/UseAuth';
 
-const AdminPage = () => {
-    const { signer } = useAuth();
+const AdminPage = ({signer}) => {
     return (
         <div>
             <div style={{ float: "left", padding: '20px', fontSize: '30px' }}>

@@ -1,6 +1,5 @@
 // Token ID: 1
-import React, { useState, useEffect } from 'react';
-import useAuth from '../Auth/UseAuth';
+import React, { useState } from 'react';
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
@@ -10,14 +9,13 @@ import { ethers } from 'ethers';
 
 const ec = new EC.ec('p256');
 
-const UserPage = () => {
+const UserPage = ({signer, user}) => {
   const [seedPhrase, setSeedPhrase] = useState('');
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [fetchError, setFetchError] = useState('');
   const [decryptError, setDecryptError] = useState('');
-  const { signer, user } = useAuth();
 
   // Later it should be set automatically after deployment using Deploy.js
   const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"

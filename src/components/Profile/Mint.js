@@ -15,13 +15,13 @@ const Mint = ({signer}) => {
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
   const [fetchError, setFetchError] = useState('');
-  const user = "0x803752055A2499E7F2e25F90937c89e685dc01db";
+  const user = "0xfd1F5B5F618313E19fA0eA3eEFAb422337AF4f99";
   const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
 
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
       try {
-        const response = await fetch('https://ipfs.io/ipfs/Qmb9NDjS7FvjaAjmN2UPak7N8qrE6HLYJLdetBdtKApMFE');
+        const response = await fetch('https://ipfs.io/ipfs/QmaVBStSnqitf2jPQ2BcBYje7dpX4t4dbSZ6dsE7VQZrAU');
         const jsonData = await response.json();
         setIdJson(jsonData);
       } catch (error) {
@@ -49,7 +49,7 @@ const Mint = ({signer}) => {
       const { abi, bytecode } = artifact;
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
-      const tx = await contract.mintDID(user, `https://ipfs.io/ipfs/QmXna3acK52D71hwdisHo6Zb24VPCg4QNkmVPz44N6NeCU`);
+      const tx = await contract.mintDID(user, `https://ipfs.io/ipfs/Qmewz5XsFkLSZkkYGTFFBXEKd6SMRmrsMkN7WF8qnGCCJM`);
       await tx.wait();
       alert(`DID minted and sent to ${user}`);
 

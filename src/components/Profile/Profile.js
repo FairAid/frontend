@@ -4,11 +4,11 @@ import AdminPage from './AdminPage';
 import UserPage from './UserPage';
 
 const Profile = () => {
-  const { user } = useAuthContext();
+  const { user, signer } = useAuthContext();
 
-  const adminAddress = '0xfd1F5B5F618313E19fA0eA3eEFAb422337AF4f99';
+  const adminAddress = '0x803752055A2499E7F2e25F90937c89e685dc01db';
 
-  return user === adminAddress ? <AdminPage /> : <UserPage />;
+  return user === adminAddress ? <AdminPage signer={signer}/> : <UserPage signer={signer} user={user}/>;
 };
 
 export default Profile;

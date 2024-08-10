@@ -6,7 +6,6 @@ const useAuth = () => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
   const [signer, setSigner] = useState(null);
-  const [provider, setProvider] = useState(null);
   const navigate = useNavigate();
 
   const isAuth = async () => {
@@ -23,7 +22,6 @@ const useAuth = () => {
         const address = await signer.getAddress();
         setUser(address);
         setSigner(signer);
-        setProvider(provider);
         setAuth(true);
       } else {
         setAuth(false);
@@ -37,30 +35,36 @@ const useAuth = () => {
   useEffect(() => {
     isAuth(); // Check if the user is already connected on component mount
 
+    const handleAccountsChanged = async (accounts) => {
+      if (accounts.length === 0) {
+        // User disconnected from MetaMask
+        setAuth(false);
+        setUser(null);
+        setSigner(null);
+        navigate('/'); // Redirect to base page
+      } else {
+        // User changed their account
+        const newAccount = accounts[0];
+        setUser(newAccount);
+
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = provider.getSigner();
+        setSigner(signer);
+        setAuth(true);
+      }
+    };
+
     if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts) => {
-        if (accounts.length === 0) {
-          // User disconnected from MetaMask
-          setAuth(false);
-          setUser(null);
-          setSigner(null);
-          navigate('/'); // Redirect to base page
-        } else {
-          // User changed their account
-          const newAccount = accounts[0];
-          setUser(newAccount);
-          setAuth(true);
-        }
-      });
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
     }
 
     // Clean up the event listener on component unmount
     return () => {
       if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', () => {});
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
       }
     };
-  }, []);
+  }, [navigate]);
 
   return {
     auth,
@@ -69,7 +73,6 @@ const useAuth = () => {
     setSigner,
     setAuth,
     setUser,
-    provider
   };
 };
 
