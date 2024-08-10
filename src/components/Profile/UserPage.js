@@ -15,29 +15,12 @@ const UserPage = () => {
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [idJson, setIdJson] = useState(null);
   const [fetchError, setFetchError] = useState('');
   const [decryptError, setDecryptError] = useState('');
-  const [tokenID, setTokenID] = useState('');
-  const [URI, setURI] = useState('');
   const { signer, user } = useAuth();
 
   // Later it should be set automatically after deployment using Deploy.js
   const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
-
-  useEffect(() => {
-    const fetchJsonFromIPFS = async () => {
-      try {
-        const response = await fetch('https://ipfs.io/ipfs/QmXna3acK52D71hwdisHo6Zb24VPCg4QNkmVPz44N6NeCU');
-        const jsonData = await response.json();
-        setIdJson(jsonData);
-      } catch (error) {
-        console.error('Error fetching JSON from IPFS:', error);
-      }
-    };
-
-    fetchJsonFromIPFS();
-  }, []);
 
   const generateKeyPairFromSeed = (seed) => {
     const hash = createHash('sha256').update(seed).digest('hex');
@@ -67,7 +50,7 @@ const UserPage = () => {
       setDecryptError('Cannot decrypt data using this key. Please enter the correct seed phrase.');
       setTimeout(() => {
         setDecryptError('');
-      }, 15000); // Clear the decryptError after 15 seconds
+      }, 7000);
       return null;
     }
   };
@@ -84,22 +67,54 @@ const UserPage = () => {
     setShowModal(false);
   };
 
-  const handleDecrypt = () => {
+  const handleDecrypt = async() => {
     if (!keyPair) return;
+    
+    try {
+      const uri = await fetchDID();
+      if (!uri) {
+        setFetchError('Error fetching JSON from IPFS. Please try again later.');
+        setTimeout(() => {
+          setFetchError('');
+        }, 7000);
+        return;
+      }
 
-    if (!idJson) {
-      setFetchError('Error fetching JSON from IPFS. Please try again later.');
-      setTimeout(() => {
-        setFetchError('');
-      }, 15000); // Clear the fetchError after 15 seconds
-      return;
-    }
+      const jsonData = await fetchJsonFromIPFS(uri);
+      if (!jsonData) {
+        setFetchError('Error fetching JSON from IPFS. Please try again later.');
+        setTimeout(() => {
+          setFetchError('');
+        }, 7000); 
+        return;
+      }
 
-    const decrypted = decryptData(idJson, keyPair);
-    if (decrypted) {
-      setDecryptedData(decrypted);
-      setDecryptError(''); // Clear any previous decrypt error
+      const decrypted = decryptData(jsonData, keyPair);
+      if (decrypted) {
+        setDecryptedData(decrypted);
+        setDecryptError(''); 
+      }
+    } catch (error) {
+      console.error('Error during decryption process:', error);
+        setDecryptError('An error occurred during the decryption process. Please try again.');
+        setTimeout(() => {
+            setDecryptError('');
+      }, 7000);
     }
+  };
+
+  const fetchJsonFromIPFS = async (uri) => {
+      try {
+        const response = await fetch(uri);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const jsonData = await response.json();
+        return jsonData;
+      } catch (error) {
+        console.error('Error fetching JSON from IPFS:', error);
+        return null;
+      }
   };
 
   const fetchDID = async() => {
@@ -116,19 +131,16 @@ const UserPage = () => {
           }
           return response.json();
       });
-      const { abi, bytecode } = artifact;
+      const { abi } = artifact;
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
       const token = await contract.findDID(user);
-      setTokenID(token);
-      const uri = await contract.tokenURI(tokenID);
-      setURI(uri);
-      return URI;
-      // alert(`URI: ${URI}`);
-
+      const uri = await contract.tokenURI(token);
+      return uri;
     } catch (error) {
       console.error('Fetching TokenID failed:', error);
       alert('Fetching TokenID failed')
+      return null;
     }
   };
 
@@ -137,7 +149,6 @@ const UserPage = () => {
       <h1>Manage FairAid ID</h1>
       <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
       <button onClick={handleDecrypt} disabled={!keyPair}>Open ID</button>
-      <button onClick={fetchDID} disabled={!keyPair}>Check Token ID</button>
 
       {(fetchError || decryptError) && (
         <div className="error-popup">
