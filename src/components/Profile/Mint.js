@@ -1,25 +1,22 @@
-// seed: anotherseed
-// HEX pubkey: 04ed577161a2083139b081b1b3fc47ce425e9fad6c2cc6d07068300428662365fba033427bcd9db3af460468cdf438b6e12cd03fa8bea5b9c35bc73a458801b971
 import React, { useState, useEffect } from 'react';
-import useAuth from '../Auth/UseAuth';
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
 import '../../App.css';
 import '../../styles/UserPage.css';
+import { ethers } from 'ethers';
 
 const ec = new EC.ec('p256');
 
-const UserPage = () => {
-  const { user } = useAuth();
+const Mint = ({signer}) => {
   const [seedPhrase, setSeedPhrase] = useState('');
   const [encryptedData, setEncryptedData] = useState({});
   const [keyPair, setKeyPair] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
   const [fetchError, setFetchError] = useState('');
-
-  const publicKeyHex = "048cebbcc692a05c8451b171e627dc7a70e7125a429c2f36c08d2c2ddf731c1e3069fdab6957946c9656801c66a3331c3921856d31ca5cb88abb1a7b2d055eb4fa"
+  const user = "0x803752055A2499E7F2e25F90937c89e685dc01db";
+  const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
 
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
@@ -34,6 +31,32 @@ const UserPage = () => {
 
     fetchJsonFromIPFS();
   }, []);
+
+  const mintDID = async() => {
+    if (!signer) {
+      alert('Please connect to MetaMask to deploy the contract!');
+      return;
+    }
+
+    try {
+      const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ"
+      const artifact = await fetch(artifactUrl).then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+      });
+      const { abi, bytecode } = artifact;
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      const tx = await contract.mintDID(user, `https://ipfs.io/ipfs/QmXna3acK52D71hwdisHo6Zb24VPCg4QNkmVPz44N6NeCU`);
+      await tx.wait();
+      alert(`DID minted and sent to ${user}`);
+
+    } catch (error) {
+      console.error('Minting DID failed:', error);
+    }
+  };
 
   const generateKeyPairFromSeed = (seed) => {
     const hash = createHash('sha256').update(seed).digest('hex');
@@ -61,12 +84,8 @@ const UserPage = () => {
 
   const handleEncrypt = () => {
     if (!keyPair || !idJson) return;
-    // Decode another public key
-    const decodedPubkey = ec.keyFromPublic(publicKeyHex, 'hex').getPublic();
-    // Instead of keyPair.getPublic() use decodedPubkey
-    const encrypted = encryptData(idJson, decodedPubkey);
+    const encrypted = encryptData(idJson, keyPair.getPublic());
     setEncryptedData(encrypted);
-    console.log("Public key: ", keyPair.getPublic().encode('hex'));
   };
 
   const handleGenerateKeyPair = () => {
@@ -86,6 +105,7 @@ const UserPage = () => {
       <h3>Encrypt ID</h3>
       <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
       <button onClick={handleEncrypt} disabled={!keyPair}>Encrypt ID</button>
+      <button onClick={mintDID} disabled={!signer}>Mint DID</button>
 
       {fetchError && (
         <div className="error-popup">
@@ -117,4 +137,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default Mint;

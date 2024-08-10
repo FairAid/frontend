@@ -6,7 +6,7 @@ import UserPage from './UserPage';
 const Profile = () => {
   const { user } = useAuthContext();
 
-  const adminAddress = '0x803752055a2499e7f2e25f90937c89e685dc01db';
+  const adminAddress = '0xfd1F5B5F618313E19fA0eA3eEFAb422337AF4f99';
 
   return user === adminAddress ? <AdminPage /> : <UserPage />;
 };

@@ -1,13 +1,9 @@
-// Contract deployed at: 0x75F1b4C6DF2f4D6338D38f1d8E6D51BB31C003dc
-
 import React, { useState } from 'react';
 import { ethers } from "ethers";
-import useAuth from '../Auth/UseAuth';
 
-const Deploy = () => {
+const Deploy = ({signer}) => {
     const [deployedContractAddress, setDeployedContractAddress] = useState('');
     const [isDeploying, setIsDeploying] = useState(false);
-    const { signer } = useAuth(); // Use the signer from useAuth
 
     const deployContract = async () => {
         if (!signer) {
@@ -18,7 +14,7 @@ const Deploy = () => {
         try {
             setIsDeploying(true);
             
-            const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmUcRT77HCg7fTvB1HmZUmzvgFAUxi7U4XMDnKt9ydApLo"
+            const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ"
             const artifact = await fetch(artifactUrl).then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -34,7 +30,8 @@ const Deploy = () => {
 
             setDeployedContractAddress(contract.target);
             setIsDeploying(false);
-            alert("Contract deployed at: " +  deployedContractAddress);
+            // Debug: the alert doesn't show the contract address when deployed for the first time
+            alert("Contract deployed at: " +  String(deployedContractAddress));
             console.log(contract.target);
         } catch (error) {
             setIsDeploying(false);

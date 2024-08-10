@@ -1,32 +1,31 @@
-// seed: myseed 
-// HEX pubkey: 048cebbcc692a05c8451b171e627dc7a70e7125a429c2f36c08d2c2ddf731c1e3069fdab6957946c9656801c66a3331c3921856d31ca5cb88abb1a7b2d055eb4fa
 import React, { useState, useEffect } from 'react';
 import useAuth from '../Auth/UseAuth';
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
 import '../../App.css';
-import '../../styles/UserPage.css';
+import '../../styles/UserPage.css'; 
+import { ethers } from 'ethers';
 
 const ec = new EC.ec('p256');
 
 const UserPage = () => {
-  const { user } = useAuth();
   const [seedPhrase, setSeedPhrase] = useState('');
-  const [encryptedData, setEncryptedData] = useState({});
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
   const [fetchError, setFetchError] = useState('');
   const [decryptError, setDecryptError] = useState('');
+  const { signer } = useAuth();
 
-  const publicKeyHex = "04ed577161a2083139b081b1b3fc47ce425e9fad6c2cc6d07068300428662365fba033427bcd9db3af460468cdf438b6e12cd03fa8bea5b9c35bc73a458801b971"
+  // Later it should be set automatically after deployment using Deploy.js
+  const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
 
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
       try {
-        const response = await fetch('https://ipfs.io/ipfs/QmTN4eMq8wXzTDwoimt9sY79CCUjHtAhTJqEfmiYL8VHie');
+        const response = await fetch('https://ipfs.io/ipfs/QmXna3acK52D71hwdisHo6Zb24VPCg4QNkmVPz44N6NeCU');
         const jsonData = await response.json();
         setIdJson(jsonData);
       } catch (error) {
@@ -43,11 +42,10 @@ const UserPage = () => {
     return keyPair;
   };
 
-  const decryptData = (data, publicKey) => {
+  const decryptData = (data, privateKey) => {
     try {
       const decryptValue = (value) => {
-        const sharedKey = keyPair.derive(publicKey).toString(16);
-        // const sharedKey = privateKey.derive(keyPair.getPublic()).toString(16);
+        const sharedKey = privateKey.derive(keyPair.getPublic()).toString(16);
         const decrypted = CryptoJS.AES.decrypt(value, sharedKey).toString(CryptoJS.enc.Utf8);
         return decrypted;
       };
@@ -55,7 +53,7 @@ const UserPage = () => {
       const decryptedData = {};
       for (const key in data) {
         if (typeof data[key] === 'object' && data[key] !== null) {
-          decryptedData[key] = decryptData(data[key], publicKey);
+          decryptedData[key] = decryptData(data[key], privateKey);
         } else {
           decryptedData[key] = decryptValue(data[key]);
         }
@@ -94,11 +92,9 @@ const UserPage = () => {
       return;
     }
 
-    const decodedPubkey = ec.keyFromPublic(publicKeyHex, 'hex').getPublic();
-    const decrypted = decryptData(idJson, decodedPubkey);
+    const decrypted = decryptData(idJson, keyPair);
     if (decrypted) {
       setDecryptedData(decrypted);
-      console.log("Public key: ", keyPair.getPublic().encode('hex'));
       setDecryptError(''); // Clear any previous decrypt error
     }
   };

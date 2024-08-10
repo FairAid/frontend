@@ -6,6 +6,7 @@ const useAuth = () => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
   const [signer, setSigner] = useState(null);
+  const [provider, setProvider] = useState(null);
   const navigate = useNavigate();
 
   const isAuth = async () => {
@@ -22,6 +23,7 @@ const useAuth = () => {
         const address = await signer.getAddress();
         setUser(address);
         setSigner(signer);
+        setProvider(provider);
         setAuth(true);
       } else {
         setAuth(false);
@@ -67,6 +69,7 @@ const useAuth = () => {
     setSigner,
     setAuth,
     setUser,
+    provider
   };
 };
 
