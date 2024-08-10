@@ -1,3 +1,4 @@
+// Token ID: 1
 import React, { useState, useEffect } from 'react';
 import useAuth from '../Auth/UseAuth';
 import { createHash } from 'crypto-browserify';
@@ -17,7 +18,9 @@ const UserPage = () => {
   const [idJson, setIdJson] = useState(null);
   const [fetchError, setFetchError] = useState('');
   const [decryptError, setDecryptError] = useState('');
-  const { signer } = useAuth();
+  const [tokenID, setTokenID] = useState('');
+  const [URI, setURI] = useState('');
+  const { signer, user } = useAuth();
 
   // Later it should be set automatically after deployment using Deploy.js
   const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
@@ -99,11 +102,42 @@ const UserPage = () => {
     }
   };
 
+  const fetchDID = async() => {
+    if (!signer) {
+      alert('Please connect to MetaMask to deploy the contract!');
+      return;
+    }
+
+    try {
+      const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ"
+      const artifact = await fetch(artifactUrl).then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+      });
+      const { abi, bytecode } = artifact;
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      const token = await contract.findDID(user);
+      setTokenID(token);
+      const uri = await contract.tokenURI(tokenID);
+      setURI(uri);
+      return URI;
+      // alert(`URI: ${URI}`);
+
+    } catch (error) {
+      console.error('Fetching TokenID failed:', error);
+      alert('Fetching TokenID failed')
+    }
+  };
+
   return (
     <div>
       <h1>Manage FairAid ID</h1>
       <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
       <button onClick={handleDecrypt} disabled={!keyPair}>Open ID</button>
+      <button onClick={fetchDID} disabled={!keyPair}>Check Token ID</button>
 
       {(fetchError || decryptError) && (
         <div className="error-popup">
