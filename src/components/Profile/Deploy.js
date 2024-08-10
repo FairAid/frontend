@@ -42,11 +42,11 @@ const Deploy = ({signer}) => {
     return (
         <>
             {deployedContractAddress ? (
-                <button onClick={deployContract} disabled={isDeploying}>
+                <button className='deploy-button' onClick={deployContract} disabled={isDeploying}>
                     {isDeploying ? 'Deploying Contract...' : 'Deploy again'}
                 </button> 
             ) : (
-                <button onClick={deployContract} disabled={isDeploying}>
+                <button className='deploy-button' onClick={deployContract} disabled={isDeploying}>
                     {isDeploying ? 'Deploying Contract...' : 'Deploy Contract'}
                 </button>  
             )}

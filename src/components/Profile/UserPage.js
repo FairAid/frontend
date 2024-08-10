@@ -1,4 +1,3 @@
-// Token ID: 1
 import React, { useState } from 'react';
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
@@ -16,9 +15,9 @@ const UserPage = ({signer, user}) => {
   const [showModal, setShowModal] = useState(false);
   const [fetchError, setFetchError] = useState('');
   const [decryptError, setDecryptError] = useState('');
+  const [isIDOpen, setIsIDOpen] = useState(false);
 
-  // Later it should be set automatically after deployment using Deploy.js
-  const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
+  const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55";
 
   const generateKeyPairFromSeed = (seed) => {
     const hash = createHash('sha256').update(seed).digest('hex');
@@ -53,21 +52,26 @@ const UserPage = ({signer, user}) => {
     }
   };
 
-  const handleGenerateKeyPair = () => {
-    setShowModal(true);
-  };
-
   const handleSeedPhraseSubmit = () => {
     if (!seedPhrase) return;
     const keypair = generateKeyPairFromSeed(seedPhrase);
     setKeyPair(keypair);
-
     setShowModal(false);
+    handleDecrypt();
   };
 
-  const handleDecrypt = async() => {
-    if (!keyPair) return;
-    
+  const handleDecrypt = async () => {
+    if (!keyPair) {
+      setShowModal(true);
+      return;
+    }
+
+    if (isIDOpen) {
+      setDecryptedData(null);
+      setIsIDOpen(false);
+      return;
+    }
+
     try {
       const uri = await fetchDID();
       if (!uri) {
@@ -90,29 +94,30 @@ const UserPage = ({signer, user}) => {
       const decrypted = decryptData(jsonData, keyPair);
       if (decrypted) {
         setDecryptedData(decrypted);
-        setDecryptError(''); 
+        setDecryptError('');
+        setIsIDOpen(true);
       }
     } catch (error) {
       console.error('Error during decryption process:', error);
-        setDecryptError('An error occurred during the decryption process. Please try again.');
-        setTimeout(() => {
-            setDecryptError('');
+      setDecryptError('An error occurred during the decryption process. Please try again.');
+      setTimeout(() => {
+        setDecryptError('');
       }, 7000);
     }
   };
 
   const fetchJsonFromIPFS = async (uri) => {
-      try {
-        const response = await fetch(uri);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const jsonData = await response.json();
-        return jsonData;
-      } catch (error) {
-        console.error('Error fetching JSON from IPFS:', error);
-        return null;
+    try {
+      const response = await fetch(uri);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const jsonData = await response.json();
+      return jsonData;
+    } catch (error) {
+      console.error('Error fetching JSON from IPFS:', error);
+      return null;
+    }
   };
 
   const fetchDID = async() => {
@@ -122,12 +127,12 @@ const UserPage = ({signer, user}) => {
     }
 
     try {
-      const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ"
+      const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ";
       const artifact = await fetch(artifactUrl).then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
       });
       const { abi } = artifact;
       const contract = new ethers.Contract(contractAddress, abi, signer);
@@ -137,16 +142,15 @@ const UserPage = ({signer, user}) => {
       return uri;
     } catch (error) {
       console.error('Fetching TokenID failed:', error);
-      alert('Fetching TokenID failed')
+      alert('Fetching TokenID failed');
       return null;
     }
   };
 
   return (
     <div>
-      <h1>Manage FairAid ID</h1>
-      <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
-      <button onClick={handleDecrypt} disabled={!keyPair}>Open ID</button>
+      <h1>View your refugee ID</h1>
+      <button onClick={handleDecrypt}>{isIDOpen ? 'Close ID' : 'Open ID'}</button>
 
       {(fetchError || decryptError) && (
         <div className="error-popup">
@@ -155,7 +159,7 @@ const UserPage = ({signer, user}) => {
         </div>
       )}
 
-      {decryptedData && (
+      {decryptedData && isIDOpen && (
         <div className="id-card">
           <h2>ID Card</h2>
           <div className="id-card-content">
@@ -176,13 +180,13 @@ const UserPage = ({signer, user}) => {
       {showModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Enter Seed Phrase</h2>
+            <h2>Enter password</h2>
             <input 
               type="text" 
               value={seedPhrase} 
               onChange={(e) => setSeedPhrase(e.target.value)} 
             />
-            <button onClick={handleSeedPhraseSubmit}>Submit</button>
+            <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
           </div>
         </div>
       )}

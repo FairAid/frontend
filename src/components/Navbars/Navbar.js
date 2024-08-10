@@ -28,7 +28,7 @@ function Navbar(props) {
                     <li>
                         <Link to="/verifyID">Verify ID</Link>
                     </li>
-                    <li>
+                    <li className="connect-wallet-btn">
                         <MetaMask />
                     </li>
                 </ul>

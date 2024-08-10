@@ -22,7 +22,7 @@ function AuthNavbar(props) {
                     <li>
                         <Link to="/profile">Profile</Link>
                     </li>
-                    <li>
+                    <li className="connect-wallet-btn">
                         <MetaMask />
                     </li>
                 </ul>

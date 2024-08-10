@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
-import '../../App.css';
-import '../../styles/UserPage.css';
 import { ethers } from 'ethers';
 
 const ec = new EC.ec('p256');
@@ -15,7 +13,7 @@ const Mint = ({signer}) => {
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
   const [fetchError, setFetchError] = useState('');
-  const user = "0xfd1F5B5F618313E19fA0eA3eEFAb422337AF4f99";
+  const user = "0x803752055A2499E7F2e25F90937c89e685dc01db";
   const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
 
   useEffect(() => {
@@ -46,7 +44,7 @@ const Mint = ({signer}) => {
           }
           return response.json();
       });
-      const { abi, bytecode } = artifact;
+      const { abi } = artifact;
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
       const tx = await contract.mintDID(user, `https://ipfs.io/ipfs/Qmewz5XsFkLSZkkYGTFFBXEKd6SMRmrsMkN7WF8qnGCCJM`);
@@ -102,10 +100,9 @@ const Mint = ({signer}) => {
 
   return (
     <div>
-      <h3>Encrypt ID</h3>
       <button onClick={handleGenerateKeyPair}>Generate Key Pair</button>
       <button onClick={handleEncrypt} disabled={!keyPair}>Encrypt ID</button>
-      <button onClick={mintDID} disabled={!signer}>Mint DID</button>
+      <button onClick={mintDID} disabled={!signer}>Issue DID</button>
 
       {fetchError && (
         <div className="error-popup">

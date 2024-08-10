@@ -1,34 +1,86 @@
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #84eddc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Keeps the navbar on top */
+}
+
+/* Logo styling */
 .logo-img {
     width: 40px;
     margin-right: 8px;
+    transition: transform 0.3s ease;
 }
 
+.logo-img:hover {
+    transform: rotate(360deg); /* Spin effect on hover */
+}
+
+/* Navbar links container */
 ul {
     list-style: none;
     display: flex;
     justify-content: center;
-    background-color: #ddeaea;
-    padding: 20px;
     align-items: center;
-    margin:0;
-
+    margin: 0;
+    padding: 0;
 }
 
-ul li a{
-    margin-left: 60px;
+/* Navbar links */
+ul li a {
+    margin-left: auto; 
+    margin-right: auto;
     text-decoration: none;
     color: #221d1d;
-    padding: 20px;
+    padding: 10px 50px;
     font-weight: bold;
+    font-size: 18px; /* Increased font size for readability */
+    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
+    border-radius: 4px; /* Rounded corners for links */
 }
 
-ul li a:hover{
-    /* color: #ff6038; */
-    color: white;
+/* Navbar links hover effect */
+ul li a:hover {
+    color: rgb(101, 175, 199); /* Purple on hover */
+    background-color: #f2f2f2; /* Light background on hover */
 }
 
+/* Navbar name section */
 .Name {
     font-size: 22px;
-    font-weight:600;
-    margin-right: 100px;
+    font-weight: 600;
+    margin-right: auto; /* Reduced margin for better spacing */
+    color: #221d1d;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    ul {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+
+    ul li a {
+        margin-left: 0;
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .Name {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
 }
