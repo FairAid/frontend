@@ -12,7 +12,7 @@ const Mint = ({signer}) => {
   const [keyPair, setKeyPair] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
-  const [fetchError, setFetchError] = useState('');
+  const [mintError, setMintError] = useState('');
   const user = "0x803752055A2499E7F2e25F90937c89e685dc01db";
   const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
 
@@ -52,7 +52,14 @@ const Mint = ({signer}) => {
       alert(`DID minted and sent to ${user}`);
 
     } catch (error) {
-      console.error('Minting DID failed:', error);
+      console.error('Minting DID failed due to:', error);
+      setMintError(
+        'Error issuing DID. Note, that IDs cannot be issued twice for the same address.'
+      );
+      setTimeout(() => {
+        setMintError('');
+      }, 7000);
+      return;
     }
   };
 
@@ -104,9 +111,9 @@ const Mint = ({signer}) => {
       <button onClick={handleEncrypt} disabled={!keyPair}>Encrypt ID</button>
       <button onClick={mintDID} disabled={!signer}>Issue DID</button>
 
-      {fetchError && (
+      {mintError && (
         <div className="error-popup">
-          {fetchError && <p>{fetchError}</p>}
+          {mintError && <p>{mintError}</p>}
         </div>
       )}
 
