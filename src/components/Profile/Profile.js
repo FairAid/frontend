@@ -10,7 +10,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
       try {
-        const response = await fetch('https://ipfs.io/ipfs/Qma2iurTBU7JaDjvosRrjARbSPZmjEJvh1NmkKVSrh5L1E');
+        const response = await fetch('https://ipfs.io/ipfs/QmTco55QQz7wQofKjTrFWLBHKxNqPLqR9qNEpmt2X2nYzx');
         const jsonData = await response.json();
         const isAdmin = Object.values(jsonData).includes(user);
         setIsAdmin(isAdmin);
