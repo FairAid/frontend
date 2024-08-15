@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
@@ -57,8 +57,13 @@ const UserPage = ({signer, user}) => {
     const keypair = generateKeyPairFromSeed(seedPhrase);
     setKeyPair(keypair);
     setShowModal(false);
-    handleDecrypt();
   };
+
+  useEffect(() => {
+    if (keyPair) {
+      handleDecrypt();
+    }
+  }, [keyPair]);
 
   const handleDecrypt = async () => {
     if (!keyPair) {
@@ -75,7 +80,7 @@ const UserPage = ({signer, user}) => {
     try {
       const uri = await fetchDID();
       if (!uri) {
-        setFetchError('Error fetching JSON from IPFS. Please try again later.');
+        setFetchError("Error occured when fetching an NFT. Are you sure you've already issued an ID?");
         setTimeout(() => {
           setFetchError('');
         }, 7000);
@@ -142,7 +147,6 @@ const UserPage = ({signer, user}) => {
       return uri;
     } catch (error) {
       console.error('Fetching TokenID failed:', error);
-      alert('Fetching TokenID failed');
       return null;
     }
   };

@@ -31,8 +31,8 @@ const Deploy = ({signer}) => {
             setDeployedContractAddress(contract.target);
             setIsDeploying(false);
             // Debug: the alert doesn't show the contract address when deployed for the first time
-            alert("Contract deployed at: " +  String(deployedContractAddress));
-            console.log(contract.target);
+            alert("Contract deployed at: " +  String(contract.target));
+            console.log("DeplpoyedContractAddress: ", contract.target);
         } catch (error) {
             setIsDeploying(false);
             alert(`Failed to deploy contract: ${error.message}`);

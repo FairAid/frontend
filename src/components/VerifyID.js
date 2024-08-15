@@ -2,24 +2,20 @@ import React, { useState } from "react";
 import { ethers } from 'ethers';
 import "../App.css";
 
-const officeData = {
-  "Seoul immigration office": "0xfd1F5B5F618313E19fA0eA3eEFAb422337AF4f99",
-  "Incheon immigration office": "0x4ABBC96d0cA35A243C3624549Ae2B737E9344E7D",
-  "Busan immigration office": "0x5Ea4580d5E4a30aEa425ecBd8B2c6531804B5deF"
-};
-
 function VerifyID() {
+    const [inputAddress, setInputAddress] = useState('');
     const [userAddress, setUserAddress] = useState('');
     const [tokenID, setTokenID] = useState('');
     const [issuerAddress, setIssuerAddress] = useState('');
     const [issuerOffice, setIssuerOffice] = useState('');  
     const [transactionHash, setTransactionHash] = useState('');
+    const [showTable, setShowTable] = useState(false);
 
     const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55";
 
-    const findID = async() => {
+    const fetchTableContent = async() => {
         try {
-            const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ";
+            const artifactUrl = "https://lavender-peculiar-gamefowl-279.mypinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ";
             const artifact = await fetch(artifactUrl).then(response => response.json());
             const { abi } = artifact;
             const provider = new ethers.JsonRpcProvider('https://arb-sepolia.g.alchemy.com/v2/R_b4eb8IhQuhtGRqEPJJoHe_FUmQ4pAD');
@@ -34,9 +30,10 @@ function VerifyID() {
             setIssuerAddress(issuer);
 
             // Check if the issuerAddress exists in the JSON file
-            const officeName = Object.keys(officeData).find(key => officeData[key].toLowerCase() === issuer.toLowerCase());
-            if (officeName) {
-                setIssuerOffice(officeName);
+            const officesUrl = "https://lavender-peculiar-gamefowl-279.mypinata.cloud/ipfs/QmUZitxuGNRRLwerJJ6WeDcdBquxNcpmWhpD3BPiafcQMc";
+            const officesJson = await fetch(officesUrl).then(response => response.json());
+            if (officesJson[issuer]) {
+                setIssuerOffice(officesJson[issuer].Name);
             } else {
                 setIssuerOffice('Unknown Office. The ID may be invalid.');
             }
@@ -55,11 +52,24 @@ function VerifyID() {
                 setTransactionHash(txHash);
             }
 
+            setShowTable(true);
+
         } catch (error) {
             console.error('Fetching TokenID or Issuer Address failed:', error);
             alert('Fetching TokenID or Issuer Address failed');
         }
     }
+
+    const handleSubmit = () => {
+        setShowTable(false);
+        setUserAddress(inputAddress);
+    };
+    
+    React.useEffect(() => {
+        if (userAddress) {
+            fetchTableContent();
+        }
+    }, [userAddress]);
 
     return (
         <div>
@@ -68,13 +78,13 @@ function VerifyID() {
                 <h2>Enter ID owner's MetaMask address: </h2>
                 <input 
                     type="text" 
-                    value={userAddress} 
-                    onChange={(e) => setUserAddress(e.target.value)} 
+                    value={inputAddress} 
+                    onChange={(e) => setInputAddress(e.target.value)}
                 />
-                <button onClick={findID}>Submit</button>
+                <button onClick={handleSubmit}>Submit</button>
             </div>
 
-            {userAddress && tokenID && issuerAddress && (
+            {showTable && (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr>
@@ -95,7 +105,7 @@ function VerifyID() {
                 </table>
             )}
 
-            {transactionHash && (
+            {transactionHash && showTable && (
                 <div style={{ marginTop: '20px', textAlign: 'center' }}>
                     <a 
                         href={`https://sepolia.arbiscan.io/tx/${transactionHash}`} 

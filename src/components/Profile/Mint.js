@@ -13,7 +13,8 @@ const Mint = ({signer}) => {
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
   const [mintError, setMintError] = useState('');
-  const user = "0x803752055A2499E7F2e25F90937c89e685dc01db";
+  // const user = "0x803752055A2499E7F2e25F90937c89e685dc01db";
+  const user = "0xD7d924bc932a09779e6255B46Dc86f94E8ae330a";
   const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
 
   useEffect(() => {

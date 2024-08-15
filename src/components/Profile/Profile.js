@@ -10,17 +10,31 @@ const Profile = () => {
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
       try {
-        const response = await fetch('https://ipfs.io/ipfs/QmTco55QQz7wQofKjTrFWLBHKxNqPLqR9qNEpmt2X2nYzx');
+        console.log("Starting to fetch JSON from IPFS...");
+        
+        const response = await fetch('https://lavender-peculiar-gamefowl-279.mypinata.cloud/ipfs/QmUZitxuGNRRLwerJJ6WeDcdBquxNcpmWhpD3BPiafcQMc');
+        console.log("Fetch response status:", response.status);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const jsonData = await response.json();
-        const isAdmin = Object.values(jsonData).includes(user);
+        console.log("Fetched JSON data:", jsonData);
+
+        console.log("User address:", user);
+        console.log("JSON keys:", Object.keys(jsonData));
+
+        const isAdmin = Object.keys(jsonData).includes(user);
         setIsAdmin(isAdmin);
+
       } catch (error) {
-        alert('Error fetching JSON from IPFS:', error);
+        console.error('Error fetching JSON from IPFS:', error);
+        alert('Error fetching JSON from IPFS. Check console for details.');
       }
     };
 
     fetchJsonFromIPFS();
-    
   }, [user]);
 
   if (isAdmin === null) {
