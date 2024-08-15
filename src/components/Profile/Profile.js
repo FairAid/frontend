@@ -38,10 +38,10 @@ const Profile = () => {
   }, [user]);
 
   if (isAdmin === null) {
-    return <div>Loading...</div>;
+    return <div style={{padding: "30px"}}>Loading...</div>;
   }
 
-  return isAdmin ? <AdminPage signer={signer} /> : <UserPage signer={signer} user={user} />;
+  return isAdmin ? <AdminPage signer={signer}/> : <UserPage signer={signer} user={user}/>;
 };
 
 export default Profile;

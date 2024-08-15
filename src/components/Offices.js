@@ -19,7 +19,7 @@ function Offices() {
     }, []);
 
     return (
-        <div>
+        <div style={{padding: "50px"}}>
             <h3>Check out all of the Immigration Offices that provide FairAid IDs.</h3>
 
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

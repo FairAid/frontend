@@ -152,7 +152,7 @@ const UserPage = ({signer, user}) => {
   };
 
   return (
-    <div>
+    <div style={{padding: "40px"}}>
       <h1>View your refugee ID</h1>
       <button onClick={handleDecrypt}>{isIDOpen ? 'Close ID' : 'Open ID'}</button>
 
