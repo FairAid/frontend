@@ -14,7 +14,7 @@ const Deploy = ({signer}) => {
         try {
             setIsDeploying(true);
             
-            const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ"
+            const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmcEUv17JcLE9SxRbSyhmByx5C7oHh7Z1zAT1rQXZkuuq5"
             const artifact = await fetch(artifactUrl).then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

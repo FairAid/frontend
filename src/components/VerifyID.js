@@ -11,11 +11,11 @@ function VerifyID() {
     const [transactionHash, setTransactionHash] = useState('');
     const [showTable, setShowTable] = useState(false);
 
-    const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55";
+    const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
 
     const fetchTableContent = async() => {
         try {
-            const artifactUrl = "https://lavender-peculiar-gamefowl-279.mypinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ";
+            const artifactUrl = "https://lavender-peculiar-gamefowl-279.mypinata.cloud/ipfs/QmcEUv17JcLE9SxRbSyhmByx5C7oHh7Z1zAT1rQXZkuuq5";
             const artifact = await fetch(artifactUrl).then(response => response.json());
             const { abi } = artifact;
             const provider = new ethers.JsonRpcProvider('https://arb-sepolia.g.alchemy.com/v2/R_b4eb8IhQuhtGRqEPJJoHe_FUmQ4pAD');

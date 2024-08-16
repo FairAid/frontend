@@ -1,5 +1,6 @@
 import Deploy from "./Deploy";
 import Mint from "./Mint";
+import ListOfIDs from "./IDlist";
 import '../../App.css';
 import '../../styles/UserPage.css'; 
 
@@ -12,6 +13,9 @@ const AdminPage = ({signer}) => {
             </div>
             <div style={{ float: "left", padding: '20px', fontSize: '15px' }}>
                 <Mint signer={signer}/>
+            </div>
+            <div style={{ padding: '100px', fontSize: '15px' }}>
+                <ListOfIDs signer={signer}/>
             </div>
         </div>
     );

@@ -13,9 +13,8 @@ const Mint = ({signer}) => {
   const [showModal, setShowModal] = useState(false);
   const [idJson, setIdJson] = useState(null);
   const [mintError, setMintError] = useState('');
-  // const user = "0x803752055A2499E7F2e25F90937c89e685dc01db";
-  const user = "0xD7d924bc932a09779e6255B46Dc86f94E8ae330a";
-  const contractAddress = "0xA2E34B9a903FF2D9B72893b949ee6523fc679b55"
+  const user = "0x25CB5a4fc2c11fC1f3f60D76CF2B65dF98C42b4D";
+  const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e"
 
   useEffect(() => {
     const fetchJsonFromIPFS = async () => {
@@ -38,7 +37,7 @@ const Mint = ({signer}) => {
     }
 
     try {
-      const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmT7D23M1o1GDDgVjEgy4Ym1YuHePnwmN9t9552U8HD8MJ"
+      const artifactUrl = "https://gateway.pinata.cloud/ipfs/QmcEUv17JcLE9SxRbSyhmByx5C7oHh7Z1zAT1rQXZkuuq5"
       const artifact = await fetch(artifactUrl).then(response => {
           if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
