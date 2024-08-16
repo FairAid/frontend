@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from "ethers";
 import { create } from 'ipfs-http-client';
+import '../../styles/AdminPage.css';
 
 const ListOfIDs = ({ signer }) => {
     const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
@@ -9,6 +10,20 @@ const ListOfIDs = ({ signer }) => {
     const [contractInst, setContractInst] = useState();
     const [showModal, setShowModal] = useState(false);
     const [updateError, setUpdateError] = useState('');
+    const [currentTokenID, setCurrentTokenID] = useState();
+
+    // Input variables
+    const imageRef = useRef(null);
+    const nameRef = useRef(null);
+    const birthplaceRef = useRef(null);
+    const issuedCountryRef = useRef(null);
+    const issuedAuthorityRef = useRef(null);
+    const birthDateRef = useRef(null);
+    const passportNumberRef = useRef(null);
+    const sexRef = useRef(null);
+    const addressRef = useRef(null);
+    const issueDateRef = useRef(null);
+    const expiryDateRef = useRef(null);
 
     const getIdList = async () => {
         try {
@@ -59,26 +74,25 @@ const ListOfIDs = ({ signer }) => {
         getIdList();
     }, []);
 
-    const editID = async({
-        tokenID,
-        image,
-        name,
-        birthplace,
-        issued_country,
-        issued_authority,
-        birth_date,
-        passport_number,
-        sex,
-        address,
-        issue_date,
-        expiry_date
-    }) => {
+    const editID = async() => {
         if (!tokenIdList || !contractInst) {
             // Is there a way to make the program wait until addressesList is loaded???
             alert("Fetching info from blockchain...");
             // Do I even need this return command???
             return;
         }
+
+        const image = imageRef.current.value;
+        const name = nameRef.current.value;
+        const birthplace = birthplaceRef.current.value;
+        const issuedCountry = issuedCountryRef.current.value;
+        const issuedAuthority = issuedAuthorityRef.current.value;
+        const birthDate = birthDateRef.current.value;
+        const passportNumber = [passportNumberRef.current.value];
+        const sex = sexRef.current.value;
+        const address = addressRef.current.value;
+        const issueDate = issueDateRef.current.value;
+        const expiryDate = expiryDateRef.current.value;
 
         try {
             const updated_json = {
@@ -87,14 +101,14 @@ const ListOfIDs = ({ signer }) => {
                 "attributes": {
                   "Name": name,
                   "Place of birth": birthplace,
-                  "Issued country": issued_country,
-                  "Issued authority": issued_authority,
-                  "Date of birth": birth_date,
-                  "Passport number": passport_number,
+                  "Issued country": issuedCountry,
+                  "Issued authority": issuedAuthority,
+                  "Date of birth": birthDate,
+                  "Passport number": passportNumber,
                   "Sex": sex,
                   "Registration address": address,
-                  "Date of issue": issue_date,
-                  "Date of expiry": expiry_date
+                  "Date of issue": issueDate,
+                  "Date of expiry": expiryDate
                 }
             }
 
@@ -104,10 +118,10 @@ const ListOfIDs = ({ signer }) => {
             const result = await ipfs.add(jsonBuffer);
 
             const uri = `https://ipfs.infura.io/ipfs/${result.path}`;
-            const updateURI = await contractInst.updateTokenURI(tokenID, uri);
+            const updateURI = await contractInst.updateTokenURI(currentTokenID, uri);
             await updateURI.wait();
             setShowModal(false);
-            alert(`ID number ${tokenID} updated successfully!`);
+            alert(`ID number ${currentTokenID} updated successfully!`);
         } catch(error) {
             console.log("Update error: ", error);
             setUpdateError(
@@ -118,12 +132,12 @@ const ListOfIDs = ({ signer }) => {
               }, 7000);
               return;
         }
-
-        const handleEditID = () => {
-            setShowModal(true);
-        };
-        
     }
+
+    const handleEditID = ({ID}) => {
+        setCurrentTokenID(ID);
+        setShowModal(true);
+    };
 
     return (
         <>
@@ -145,7 +159,7 @@ const ListOfIDs = ({ signer }) => {
                                 {tokenIdList[address] !== undefined ? tokenIdList[address] : "Loading..."}
                             </td>
                             <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>
-                                <button onClick={handleEditID}>Edit ID</button>
+                                <button onClick={() => handleEditID(tokenIdList[address])}>Edit ID</button>
                             </td>
                             <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>{/* expiration */}</td>
                         </tr>
@@ -160,15 +174,104 @@ const ListOfIDs = ({ signer }) => {
             )}
 
             {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>Image</h2>
-                            <input 
-                                type="text" 
-                                value={image} 
-                                onChange={(e) => setSeedPhrase(e.target.value)} 
-                            />
-                        <button onClick={editID(image)}>Submit</button>
+                <div className="edit-id-modal">
+                    <div className="edit-id-modal-content">
+                        <h3>Edit Details</h3>
+                        <div className="form-container">
+                            <div className="left-column">
+                                <label>
+                                    Image
+                                    <input 
+                                        type="text" 
+                                        ref={imageRef}
+                                        placeholder="Image"
+                                    />
+                                </label>
+                                <label>
+                                    Name
+                                    <input 
+                                        type="text" 
+                                        ref={nameRef}
+                                        placeholder="Name"
+                                    />
+                                </label>
+                                <label> 
+                                    Place of birth
+                                    <input 
+                                        type="text" 
+                                        ref={birthplaceRef}
+                                        placeholder="Birthplace"
+                                    />
+                                </label>
+                                <label>
+                                    Issued country
+                                    <input 
+                                        type="text" 
+                                        ref={issuedCountryRef}
+                                        placeholder="Issued country"
+                                    />
+                                </label>
+                                <label>
+                                    Issued Authority
+                                    <input 
+                                        type="text" 
+                                        ref={issuedAuthorityRef}
+                                        placeholder="Issued authority"
+                                    />
+                                </label>
+                                <label>
+                                    Birth Date
+                                    <input 
+                                        type="text" 
+                                        ref={birthDateRef}
+                                        placeholder="Birth Date"
+                                    />
+                                </label>
+                            </div>
+                            <div className="right-column">
+                                <label>
+                                    Passport Number
+                                    <input 
+                                        type="text" 
+                                        ref={passportNumberRef}
+                                        placeholder="Passport Number"
+                                    />
+                                </label>
+                                <label>
+                                    Sex
+                                    <input 
+                                        type="text" 
+                                        ref={sexRef}
+                                        placeholder="Sex"
+                                    />
+                                </label>
+                                <label>
+                                    Address
+                                    <input 
+                                        type="text" 
+                                        ref={addressRef}
+                                        placeholder="Address"
+                                    />
+                                </label>
+                                <label>
+                                    Issue Date
+                                    <input 
+                                        type="text" 
+                                        ref={issueDateRef}
+                                        placeholder="Issue Date"
+                                    />
+                                </label>
+                                <label>
+                                    Expiry Date
+                                    <input 
+                                        type="text" 
+                                        ref={expiryDateRef}
+                                        placeholder="Expiry Date"
+                                    />
+                                </label>
+                                <button style={{ float: "right"}} onClick={editID}>Submit</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
