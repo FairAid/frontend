@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from "ethers";
-import { create } from 'ipfs-http-client';
 import '../../styles/AdminPage.css';
+import process from 'process';  
 
 const ListOfIDs = ({ signer }) => {
     const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
@@ -82,6 +82,11 @@ const ListOfIDs = ({ signer }) => {
             return;
         }
 
+        if (!currentTokenID) {
+            alert("No Token ID selected!");
+            return;
+        }
+
         const image = imageRef.current.value;
         const name = nameRef.current.value;
         const birthplace = birthplaceRef.current.value;
@@ -112,12 +117,26 @@ const ListOfIDs = ({ signer }) => {
                 }
             }
 
-            const ipfs = create('https://ipfs.infura.io:5001/api/v0');
+            const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
+            const pinataSecretApiKey = process.env.REACT_APP_PINATA_SECRET_API_KEY;
 
-            const jsonBuffer = Buffer.from(JSON.stringify(updated_json));
-            const result = await ipfs.add(jsonBuffer);
+            const response = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'pinata_api_key': pinataApiKey,
+                    'pinata_secret_api_key': pinataSecretApiKey,
+                },
+                body: JSON.stringify(updated_json)
+            });
 
-            const uri = `https://ipfs.infura.io/ipfs/${result.path}`;
+            console.log('PINATA_API_KEY:', pinataApiKey);
+            console.log('PINATA_SECRET_API_KEY:', pinataSecretApiKey);
+            console.log("Current token ID: ", currentTokenID);
+
+            const result = await response.json();
+
+            const uri = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
             const updateURI = await contractInst.updateTokenURI(currentTokenID, uri);
             await updateURI.wait();
             setShowModal(false);
@@ -134,7 +153,8 @@ const ListOfIDs = ({ signer }) => {
         }
     }
 
-    const handleEditID = ({ID}) => {
+    const handleEditID = (ID) => {
+        console.log('Setting currentTokenID:', ID);
         setCurrentTokenID(ID);
         setShowModal(true);
     };
