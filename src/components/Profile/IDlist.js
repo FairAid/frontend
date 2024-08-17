@@ -12,6 +12,7 @@ const ListOfIDs = ({ signer }) => {
     const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
     const [addressesList, setAddressesList] = useState([]);
     const [tokenIdList, setTokenIdList] = useState({});
+    const [idExpirationList, setIdExpirationList] = useState({});
     const [contractInst, setContractInst] = useState();
     const [showEditModal, setShowEditModal] = useState(false);
     const [showRevokeModal, setShowRevokeModal] = useState(false);
@@ -75,6 +76,30 @@ const ListOfIDs = ({ signer }) => {
 
             console.log('Token ID Map:', tokenIdMap);
             setTokenIdList(tokenIdMap);
+
+            // Fetch all Expiration dates for the Token IDs
+            const expirationPromises = addresses.map(async (address) => {
+                try {
+                    const tokenId = await contract.findDID(address);
+                    const expiration = await contract.checkExpired(tokenId);
+                    return { address, expiration: expiration };
+                } catch (error) {
+                    console.error(`Error fetching ID expiration for ${address}:`, error);
+                    return;
+                }
+            });
+
+            const expirationResults = await Promise.all(expirationPromises);
+
+            // Map addresses to ID expiration
+            const expirationMap = {};
+            expirationResults.forEach(({ address, expiration }) => {
+                expirationMap[address] = expiration;
+            });
+
+            console.log('ID expiration Map:', expirationMap);
+            setIdExpirationList(expirationMap);
+
         } catch (error) {
             console.error('Error in getIdList:', error);
         }
@@ -283,7 +308,11 @@ const ListOfIDs = ({ signer }) => {
                             <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>
                                 <button onClick={() => handleRevokeID(tokenIdList[address])}>Revoke ID</button>
                             </td>
-                            <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>{/* expiration */}</td>
+                            <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>
+                                {idExpirationList[address] !== undefined 
+                                    ? (idExpirationList[address] ? "Expired" : "Not expired") 
+                                    : "Loading..."}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
