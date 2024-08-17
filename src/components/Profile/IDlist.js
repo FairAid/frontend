@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from "ethers";
 import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
+import CryptoJS from 'crypto-js';
 import '../../styles/AdminPage.css';
 import process from 'process';  
 
@@ -100,7 +101,7 @@ const ListOfIDs = ({ signer }) => {
         const issuedCountry = issuedCountryRef.current.value;
         const issuedAuthority = issuedAuthorityRef.current.value;
         const birthDate = birthDateRef.current.value;
-        const passportNumber = [passportNumberRef.current.value];
+        const passportNumber = passportNumberRef.current.value;
         const sex = sexRef.current.value;
         const address = addressRef.current.value;
         const issueDate = issueDateRef.current.value;
@@ -124,6 +125,16 @@ const ListOfIDs = ({ signer }) => {
                 }
             }
 
+            if (!keyPair || !updated_json) {
+                alert("Cannot generate key pair and encrypt data.");
+                setShowEditModal(false);
+                return; 
+            }
+
+            // Here we should implement the encryptionality before pinning the json file to IPFS
+            const encrypted_json = encryptData(updated_json, keyPair.getPublic());
+            console.log("Encrypted json: ", encrypted_json);
+
             const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
             const pinataSecretApiKey = process.env.REACT_APP_PINATA_SECRET_API_KEY;
 
@@ -134,7 +145,7 @@ const ListOfIDs = ({ signer }) => {
                     'pinata_api_key': pinataApiKey,
                     'pinata_secret_api_key': pinataSecretApiKey,
                 },
-                body: JSON.stringify(updated_json)
+                body: JSON.stringify(encrypted_json)
             });
 
             console.log('PINATA_API_KEY:', pinataApiKey);
@@ -195,30 +206,23 @@ const ListOfIDs = ({ signer }) => {
     };
 
     // Add json encryption before posting onto IPFS
-    // const encryptData = (data, publicKey) => {
-    //     const encryptValue = (value) => {
-    //       const sharedKey = keyPair.derive(publicKey).toString(16);
-    //       const encrypted = CryptoJS.AES.encrypt(value, sharedKey).toString();
-    //       return encrypted;
-    //     };
+    const encryptData = (data, publicKey) => {
+        const encryptValue = (value) => {
+          const sharedKey = keyPair.derive(publicKey).toString(16);
+          const encrypted = CryptoJS.AES.encrypt(value, sharedKey).toString();
+          return encrypted;
+        };
     
-    //     const encryptedData = {};
-    //     for (const key in data) {
-    //       if (typeof data[key] === 'object' && data[key] !== null) {
-    //         encryptedData[key] = encryptData(data[key], publicKey);
-    //       } else {
-    //         encryptedData[key] = encryptValue(data[key]);
-    //       }
-    //     }
-    //     return encryptedData;
-    // };
-    
-    // const handleEncrypt = () => {
-    //     if (!keyPair || !idJson) return;
-    //     const encrypted = encryptData(idJson, keyPair.getPublic());
-    //     setEncryptedData(encrypted);
-    //   };
-
+        const encryptedData = {};
+        for (const key in data) {
+          if (typeof data[key] === 'object' && data[key] !== null) {
+            encryptedData[key] = encryptData(data[key], publicKey);
+          } else {
+            encryptedData[key] = encryptValue(data[key]);
+          }
+        }
+        return encryptedData;
+    };
 
     return (
         <>

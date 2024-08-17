@@ -41,6 +41,8 @@ const UserPage = ({signer, user}) => {
           decryptedData[key] = decryptValue(data[key]);
         }
       }
+      console.log("Decrypted data: ", decryptedData);
+      console.log("Decrypted data attributes: ", decryptedData.attributes);
       return decryptedData;
     } catch (error) {
       console.error('Error decrypting data:', error);
