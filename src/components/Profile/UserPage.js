@@ -151,6 +151,10 @@ const UserPage = ({signer, user}) => {
     }
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div style={{padding: "40px"}}>
       <h1>View your refugee ID</h1>
@@ -184,12 +188,26 @@ const UserPage = ({signer, user}) => {
       {showModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Enter password</h2>
-            <input 
-              type="text" 
-              value={seedPhrase} 
-              onChange={(e) => setSeedPhrase(e.target.value)} 
-            />
+            <span 
+              onClick={handleCloseModal}
+              style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  fontSize: '20px',
+                  cursor: 'pointer'
+              }}
+            >
+              &times;
+            </span>
+            <label>
+              Enter password
+              <input 
+                type="text" 
+                value={seedPhrase} 
+                onChange={(e) => setSeedPhrase(e.target.value)} 
+              />
+            </label>
             <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
           </div>
         </div>

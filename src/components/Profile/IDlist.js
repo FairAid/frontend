@@ -1,16 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from "ethers";
+import { createHash } from 'crypto-browserify';
+import EC from 'elliptic';
 import '../../styles/AdminPage.css';
 import process from 'process';  
+
+const ec = new EC.ec('p256');
 
 const ListOfIDs = ({ signer }) => {
     const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
     const [addressesList, setAddressesList] = useState([]);
     const [tokenIdList, setTokenIdList] = useState({});
     const [contractInst, setContractInst] = useState();
-    const [showModal, setShowModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [updateError, setUpdateError] = useState('');
     const [currentTokenID, setCurrentTokenID] = useState();
+    const [keyPair, setKeyPair] = useState(null);
+    const [seedPhrase, setSeedPhrase] = useState('');
 
     // Input variables
     const imageRef = useRef(null);
@@ -139,8 +146,8 @@ const ListOfIDs = ({ signer }) => {
             const uri = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
             const updateURI = await contractInst.updateTokenURI(currentTokenID, uri);
             await updateURI.wait();
-            setShowModal(false);
-            alert(`ID number ${currentTokenID} updated successfully!`);
+            setShowEditModal(false);
+            alert(`ID number ${currentTokenID} updated successfully! New URI: https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`);
         } catch(error) {
             console.log("Update error: ", error);
             setUpdateError(
@@ -154,10 +161,64 @@ const ListOfIDs = ({ signer }) => {
     }
 
     const handleEditID = (ID) => {
+        handleGenerateKeyPair();
         console.log('Setting currentTokenID:', ID);
         setCurrentTokenID(ID);
-        setShowModal(true);
     };
+
+    const handleCloseEditModal = () => {
+        setShowEditModal(false);
+    };
+
+    // Ask for a password before allowing to edit ID
+    const generateKeyPairFromSeed = (seed) => {
+        const hash = createHash('sha256').update(seed).digest('hex');
+        const keyPair = ec.keyFromPrivate(hash);
+        return keyPair;
+    };
+
+    const handleGenerateKeyPair = () => {
+        setShowPasswordModal(true);
+    };
+
+    const handleSeedPhraseSubmit = () => {
+        if (!seedPhrase) return;
+        const keypair = generateKeyPairFromSeed(seedPhrase);
+        setKeyPair(keypair);
+    
+        setShowPasswordModal(false);
+        setShowEditModal(true);
+    };
+
+    const handleClosePasswordModal = () => {
+        setShowPasswordModal(false);
+    };
+
+    // Add json encryption before posting onto IPFS
+    // const encryptData = (data, publicKey) => {
+    //     const encryptValue = (value) => {
+    //       const sharedKey = keyPair.derive(publicKey).toString(16);
+    //       const encrypted = CryptoJS.AES.encrypt(value, sharedKey).toString();
+    //       return encrypted;
+    //     };
+    
+    //     const encryptedData = {};
+    //     for (const key in data) {
+    //       if (typeof data[key] === 'object' && data[key] !== null) {
+    //         encryptedData[key] = encryptData(data[key], publicKey);
+    //       } else {
+    //         encryptedData[key] = encryptValue(data[key]);
+    //       }
+    //     }
+    //     return encryptedData;
+    // };
+    
+    // const handleEncrypt = () => {
+    //     if (!keyPair || !idJson) return;
+    //     const encrypted = encryptData(idJson, keyPair.getPublic());
+    //     setEncryptedData(encrypted);
+    //   };
+
 
     return (
         <>
@@ -193,9 +254,49 @@ const ListOfIDs = ({ signer }) => {
                 </div>
             )}
 
-            {showModal && (
+            {showPasswordModal && (
+                <div className="modal">
+                <div className="modal-content">
+                    <span 
+                    onClick={handleClosePasswordModal}
+                    style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                    }}
+                    >
+                        &times;
+                    </span>
+                    <label>
+                    Enter password
+                    <input 
+                        type="text" 
+                        value={seedPhrase} 
+                        onChange={(e) => setSeedPhrase(e.target.value)} 
+                    />
+                    </label>
+                    <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
+                </div>
+                </div>
+            )}
+
+            {showEditModal && (
                 <div className="edit-id-modal">
                     <div className="edit-id-modal-content">
+                        <span 
+                            onClick={handleCloseEditModal}
+                            style={{
+                                position: 'absolute',
+                                top: '10px',
+                                right: '10px',
+                                fontSize: '20px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            &times;
+                        </span>
                         <h3>Edit Details</h3>
                         <div className="form-container">
                             <div className="left-column">
