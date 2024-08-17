@@ -14,8 +14,10 @@ const ListOfIDs = ({ signer }) => {
     const [tokenIdList, setTokenIdList] = useState({});
     const [contractInst, setContractInst] = useState();
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showRevokeModal, setShowRevokeModal] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [updateError, setUpdateError] = useState('');
+    const [revokeError, setRevokeError] = useState('');
     const [currentTokenID, setCurrentTokenID] = useState();
     const [keyPair, setKeyPair] = useState(null);
     const [seedPhrase, setSeedPhrase] = useState('');
@@ -173,6 +175,16 @@ const ListOfIDs = ({ signer }) => {
         setCurrentTokenID(ID);
     };
 
+    const handleRevokeID = (ID) => {
+        console.log('Setting currentTokenID:', ID);
+        setCurrentTokenID(ID);
+        setShowRevokeModal(true);
+    };
+
+    const handleCloseRevokeModal = () => {
+        setShowRevokeModal(false);
+    };
+
     const handleCloseEditModal = () => {
         setShowEditModal(false);
     };
@@ -218,6 +230,33 @@ const ListOfIDs = ({ signer }) => {
         return encryptedData;
     };
 
+    const revokeID = async() => {
+        if (!tokenIdList || !contractInst) {
+            return;
+        }
+
+        if (!currentTokenID) {
+            alert("No Token ID selected!");
+            return;
+        }
+
+        try {
+            const burnID = await contractInst.burnDID(currentTokenID);
+            await burnID.wait();
+            setShowRevokeModal(false);
+            alert(`ID number ${currentTokenID} was revoked!`);
+        } catch(error) {
+            console.log("Revoke error: ", error);
+            setRevokeError(
+                'Error! Could not revoke ID.'
+              );
+              setTimeout(() => {
+                setRevokeError('');
+              }, 7000);
+              return;
+        }
+    }
+
     return (
         <>
             <h3>List of all issued IDs.</h3>
@@ -227,6 +266,7 @@ const ListOfIDs = ({ signer }) => {
                         <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Address</th>
                         <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Token ID</th>
                         <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Manage</th>
+                        <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Revoke ID</th>
                         <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Expiration</th>
                     </tr>
                 </thead>
@@ -240,6 +280,9 @@ const ListOfIDs = ({ signer }) => {
                             <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>
                                 <button onClick={() => handleEditID(tokenIdList[address])}>Edit ID</button>
                             </td>
+                            <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>
+                                <button onClick={() => handleRevokeID(tokenIdList[address])}>Revoke ID</button>
+                            </td>
                             <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>{/* expiration */}</td>
                         </tr>
                     ))}
@@ -249,6 +292,12 @@ const ListOfIDs = ({ signer }) => {
             {updateError && (
                 <div className="error-popup">
                     {updateError && <p>{updateError}</p>}
+                </div>
+            )}
+
+            {revokeError && (
+                <div className="error-popup">
+                    {revokeError && <p>{revokeError}</p>}
                 </div>
             )}
 
@@ -276,6 +325,27 @@ const ListOfIDs = ({ signer }) => {
                     />
                     </label>
                     <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
+                </div>
+                </div>
+            )}
+
+            {showRevokeModal && (
+                <div className="modal">
+                <div className="modal-content">
+                    <span 
+                    onClick={handleCloseRevokeModal}
+                    style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                    }}
+                    >
+                        &times;
+                    </span>
+                    <h3>Are you sure you want to revoke your ID?</h3>
+                    <button className='submit-button' onClick={revokeID}>Yes, revoke ID</button>
                 </div>
                 </div>
             )}

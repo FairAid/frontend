@@ -166,7 +166,7 @@ const Mint = ({signer}) => {
   return (
     <div>
       <button onClick={handleGenerateKeyPair} disabled={!signer}>Issue ID</button>
-
+      
       {mintError && (
         <div className="error-popup">
           {mintError && <p>{mintError}</p>}
