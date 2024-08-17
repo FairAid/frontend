@@ -11,7 +11,7 @@ const AdminPage = ({signer}) => {
             <div style={{ float: "left", padding: '20px', fontSize: '30px' }}>
                 <Deploy signer={signer}/>
             </div>
-            <div style={{ float: "left", padding: '20px', fontSize: '15px' }}>
+            <div style={{ float: "right", padding: '20px', fontSize: '15px' }}>
                 <Mint signer={signer}/>
             </div>
             <div style={{ padding: '100px', fontSize: '15px' }}>

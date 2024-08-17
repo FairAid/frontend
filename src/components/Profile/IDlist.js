@@ -84,9 +84,6 @@ const ListOfIDs = ({ signer }) => {
 
     const editID = async() => {
         if (!tokenIdList || !contractInst) {
-            // Is there a way to make the program wait until addressesList is loaded???
-            alert("Fetching info from blockchain...");
-            // Do I even need this return command???
             return;
         }
 
@@ -131,7 +128,6 @@ const ListOfIDs = ({ signer }) => {
                 return; 
             }
 
-            // Here we should implement the encryptionality before pinning the json file to IPFS
             const encrypted_json = encryptData(updated_json, keyPair.getPublic());
             console.log("Encrypted json: ", encrypted_json);
 
@@ -181,7 +177,6 @@ const ListOfIDs = ({ signer }) => {
         setShowEditModal(false);
     };
 
-    // Ask for a password before allowing to edit ID
     const generateKeyPairFromSeed = (seed) => {
         const hash = createHash('sha256').update(seed).digest('hex');
         const keyPair = ec.keyFromPrivate(hash);
@@ -205,7 +200,6 @@ const ListOfIDs = ({ signer }) => {
         setShowPasswordModal(false);
     };
 
-    // Add json encryption before posting onto IPFS
     const encryptData = (data, publicKey) => {
         const encryptValue = (value) => {
           const sharedKey = keyPair.derive(publicKey).toString(16);
