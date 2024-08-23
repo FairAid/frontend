@@ -3,12 +3,12 @@ import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
 import '../../App.css';
-import '../../styles/UserPage.css'; 
+import '../../styles/UserPage.css';
 import { ethers } from 'ethers';
 
 const ec = new EC.ec('p256');
 
-const UserPage = ({signer, user}) => {
+const UserPage = ({ signer, user }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
@@ -94,7 +94,7 @@ const UserPage = ({signer, user}) => {
         setFetchError('Error fetching JSON from IPFS. Please try again later.');
         setTimeout(() => {
           setFetchError('');
-        }, 7000); 
+        }, 7000);
         return;
       }
 
@@ -127,7 +127,7 @@ const UserPage = ({signer, user}) => {
     }
   };
 
-  const fetchDID = async() => {
+  const fetchDID = async () => {
     if (!signer) {
       alert('Please connect to MetaMask to deploy the contract!');
       return;
@@ -158,63 +158,50 @@ const UserPage = ({signer, user}) => {
   };
 
   return (
-    <div style={{padding: "40px"}}>
-      <h1>View your refugee ID</h1>
-      <button onClick={handleDecrypt}>{isIDOpen ? 'Close ID' : 'Open ID'}</button>
-
-      {(fetchError || decryptError) && (
-        <div className="error-popup">
-          {fetchError && <p>{fetchError}</p>}
-          {decryptError && <p>{decryptError}</p>}
+    <div>
+      <h1 className='userPage-header'>View your refugee ID</h1>
+      <div className='border-box'>
+        <div className="modal-content">
+          <label className='Label'>
+            Enter password
+            <input
+              type="text"
+              value={seedPhrase}
+              onChange={(e) => setSeedPhrase(e.target.value)}
+            />
+          </label>
+          <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
         </div>
-      )}
-
-      {decryptedData && isIDOpen && (
-        <div className="id-card">
-          <h2>ID Card</h2>
-          <div className="id-card-content">
-            <p><strong>Name:</strong> {decryptedData.attributes.Name}</p>
-            <p><strong>Place of birth:</strong> {decryptedData.attributes["Place of birth"]}</p>
-            <p><strong>Issued country:</strong> {decryptedData.attributes["Issued country"]}</p>
-            <p><strong>Issued authority:</strong> {decryptedData.attributes["Issued authority"]}</p>
-            <p><strong>Date of birth:</strong> {decryptedData.attributes["Date of birth"]}</p>
-            <p><strong>Passport number:</strong> {decryptedData.attributes["Passport number"]}</p>
-            <p><strong>Sex:</strong> {decryptedData.attributes.Sex}</p>
-            <p><strong>Registration address:</strong> {decryptedData.attributes["Registration address"]}</p>
-            <p><strong>Date of issue:</strong> {decryptedData.attributes["Date of issue"]}</p>
-            <p><strong>Date of expiry:</strong> {decryptedData.attributes["Date of expiry"]}</p>
+      </div>
+      {
+        (fetchError || decryptError) && (
+          <div className="error-popup">
+            {fetchError && <p>{fetchError}</p>}
+            {decryptError && <p>{decryptError}</p>}
           </div>
-        </div>
-      )}
+        )
+      }
 
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span 
-              onClick={handleCloseModal}
-              style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  fontSize: '20px',
-                  cursor: 'pointer'
-              }}
-            >
-              &times;
-            </span>
-            <label>
-              Enter password
-              <input 
-                type="text" 
-                value={seedPhrase} 
-                onChange={(e) => setSeedPhrase(e.target.value)} 
-              />
-            </label>
-            <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
+      {
+        decryptedData && isIDOpen && (
+          <div className="id-card">
+            <h2>ID Card</h2>
+            <div className="id-card-content">
+              <p><strong>Name:</strong> {decryptedData.attributes.Name}</p>
+              <p><strong>Place of birth:</strong> {decryptedData.attributes["Place of birth"]}</p>
+              <p><strong>Issued country:</strong> {decryptedData.attributes["Issued country"]}</p>
+              <p><strong>Issued authority:</strong> {decryptedData.attributes["Issued authority"]}</p>
+              <p><strong>Date of birth:</strong> {decryptedData.attributes["Date of birth"]}</p>
+              <p><strong>Passport number:</strong> {decryptedData.attributes["Passport number"]}</p>
+              <p><strong>Sex:</strong> {decryptedData.attributes.Sex}</p>
+              <p><strong>Registration address:</strong> {decryptedData.attributes["Registration address"]}</p>
+              <p><strong>Date of issue:</strong> {decryptedData.attributes["Date of issue"]}</p>
+              <p><strong>Date of expiry:</strong> {decryptedData.attributes["Date of expiry"]}</p>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 };
 

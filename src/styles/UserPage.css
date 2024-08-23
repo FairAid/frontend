@@ -1,26 +1,31 @@
-.modal {
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.userPage-header {
+  padding: 20px;
+  font-size: 30px;
 }
 
+.border-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+
 .modal-content {
-  background-color: #ddecee;
-  padding: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: #C2CFCF;
+  border-radius: 10px;
   border: 1px solid #888;
-  width: auto;
-  max-width: 400px; /* Maximum width to ensure it doesn't get too wide */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Add a shadow for depth */
-  border-radius: 8px; /* Optional: Rounded corners */
-  position: relative
+  /* Maximum width to ensure it doesn't get too wide */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Optional: Add a shadow for depth */
+  border-radius: 8px;
+  padding: 20px;
+  width: 60%;
+  height: 300px;
+  /* Optional: Rounded corners */
 }
 
 .modal-content h2 {
@@ -29,6 +34,7 @@
 
 input {
   width: 100%;
+  height: 30px;
   padding: 3px;
   margin-top: 20px;
 }
@@ -38,19 +44,28 @@ input {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #f44336; /* Red background for error */
+  background-color: #f44336;
+  /* Red background for error */
   color: white;
   padding: 16px;
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000; /* Ensure it appears above other content */
-  max-width: 80%;
+  z-index: 1000;
+  /* Ensure it appears above other content */
   text-align: center;
   font-size: 16px;
 }
 
 .error-popup p {
   margin: 0;
+}
+
+.Label {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  font-size: 30px;
 }
 
 .id-card {
@@ -65,29 +80,31 @@ input {
 
 .id-card-content p {
   margin: 10px 0;
-}  
+}
 
 .submit-button {
-  background-color: #4cc1a4; 
-  border: none; 
-  color: white; 
-  padding: 5px 20px; 
-  text-align: center; 
-  text-decoration: none; 
+  background-color: #4cc1a4;
+  width: 200px;
+  height: 50px;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  text-align: center;
+  text-decoration: none;
   display: inline-block;
-  font-size: 16px; 
-  margin: 3px 3px; 
-  cursor: pointer; 
+  font-size: 30px;
+  margin: 3px 3px;
+  cursor: pointer;
   border-radius: 8px;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .submit-button:hover {
-  background-color: rgb(101, 175, 199); 
-  transform: scale(1.05); 
+  background-color: rgb(101, 175, 199);
+  transform: scale(1.05);
 }
 
 .submit-button:disabled {
-  background-color: #cccccc; 
-  cursor: not-allowed; 
+  background-color: #cccccc;
+  cursor: not-allowed;
 }

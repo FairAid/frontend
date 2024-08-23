@@ -1,20 +1,32 @@
 {
   "0xfd1F5B5F618313E19fA0eA3eEFAb422337AF4f99": {
-    "Name": "Seoul immigration office", 
+    "Name": "Seoul immigration office",
     "Email": "seoul_immigration_office@gmail.com",
     "Phone": "01041287907",
     "Address": "South Korea, Seoul, Green street, 16/45"
   },
   "0x4ABBC96d0cA35A243C3624549Ae2B737E9344E7D": {
-    "Name": "Incheon immigration office", 
+    "Name": "Incheon immigration office",
     "Email": "incheon_immigration_office@yahoo.com",
     "Phone": "010257369548",
     "Address": "South Korea, Incheon, Honggildong street, 65"
   },
   "0x5Ea4580d5E4a30aEa425ecBd8B2c6531804B5deF": {
-    "Name": "Busan immigration office", 
+    "Name": "Busan immigration office",
     "Email": "busan_immigration_office@naver.com",
     "Phone": "010257023896",
+    "Address": "South Korea, Busan, Gwangalli beach, bldg. 18"
+  },
+  "0x06F634470FE5Dc47Cb61C73bD467dFe50a4A7b44": {
+    "Name": "Son immigration office",
+    "Email": "son_immigration_office@naver.com",
+    "Phone": "01012345678",
+    "Address": "South Korea, Busan, Gwangalli beach, bldg. 18"
+  },
+  "0x3672Db2D525f38912a592ccaF4E71bF637033082": {
+    "Name": "Sunjae immigration office",
+    "Email": "sunjae_immigration_office@naver.com",
+    "Phone": "01087654321",
     "Address": "South Korea, Busan, Gwangalli beach, bldg. 18"
   }
 }

@@ -1,0 +1,42 @@
+.home,
+body {
+    width: 100vw;
+    height: 100vw;
+    background: linear-gradient(90deg, #26A2A8 22%, #2463C2 89%);
+    margin: 0px;
+}
+
+.welcome {
+    padding: 20px;
+    font-size: 30px;
+}
+
+h1 {
+    margin-top: 0px;
+}
+
+
+.home-Body {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+}
+
+.intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 20px;
+
+
+}
+
+.intro-sentence {
+    margin-top: 0px;
+    color: white;
+}
+
+.intro-img {
+    margin-right: 40px;
+    margin-left: 40px;
+}

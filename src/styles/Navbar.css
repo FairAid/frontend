@@ -4,12 +4,18 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #84eddc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
     position: sticky;
     top: 0;
-    z-index: 1000; /* Keeps the navbar on top */
+    z-index: 1000;
+    /* Keeps the navbar on top */
 }
+
+.nav {
+    background-color: #1C537B;
+}
+
 
 /* Logo styling */
 .logo-img {
@@ -19,7 +25,8 @@
 }
 
 .logo-img:hover {
-    transform: rotate(360deg); /* Spin effect on hover */
+    transform: rotate(360deg);
+    /* Spin effect on hover */
 }
 
 /* Navbar links container */
@@ -34,28 +41,34 @@ ul {
 
 /* Navbar links */
 ul li a {
-    margin-left: auto; 
+    margin-left: auto;
     margin-right: auto;
     text-decoration: none;
     color: #221d1d;
     padding: 10px 50px;
     font-weight: bold;
-    font-size: 18px; /* Increased font size for readability */
-    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
-    border-radius: 4px; /* Rounded corners for links */
+    font-size: 18px;
+    /* Increased font size for readability */
+    transition: color 0.3s ease, background-color 0.3s ease;
+    /* Smooth transitions */
+    border-radius: 4px;
+    /* Rounded corners for links */
 }
 
 /* Navbar links hover effect */
 ul li a:hover {
-    color: rgb(101, 175, 199); /* Purple on hover */
-    background-color: #f2f2f2; /* Light background on hover */
+    color: rgb(101, 175, 199);
+    /* Purple on hover */
+    background-color: #f2f2f2;
+    /* Light background on hover */
 }
 
 /* Navbar name section */
 .Name {
     font-size: 22px;
     font-weight: 600;
-    margin-right: auto; /* Reduced margin for better spacing */
+    margin-right: auto;
+    /* Reduced margin for better spacing */
     color: #221d1d;
 }
 

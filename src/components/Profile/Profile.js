@@ -11,8 +11,8 @@ const Profile = () => {
     const fetchJsonFromIPFS = async () => {
       try {
         console.log("Starting to fetch JSON from IPFS...");
-        
-        const response = await fetch('https://lavender-peculiar-gamefowl-279.mypinata.cloud/ipfs/QmUZitxuGNRRLwerJJ6WeDcdBquxNcpmWhpD3BPiafcQMc');
+
+        const response = await fetch('https://amaranth-accepted-hare-424.mypinata.cloud/ipfs/QmbC5CKm3SNETXZM4Ym8vMZqhQDKg3dvi5GPHdGzMiC74J');
         console.log("Fetch response status:", response.status);
 
         if (!response.ok) {
@@ -38,10 +38,10 @@ const Profile = () => {
   }, [user]);
 
   if (isAdmin === null) {
-    return <div style={{padding: "30px"}}>Loading...</div>;
+    return <div style={{ padding: "30px" }}>Loading...</div>;
   }
 
-  return isAdmin ? <AdminPage signer={signer}/> : <UserPage signer={signer} user={user}/>;
+  return isAdmin ? <AdminPage signer={signer} /> : <UserPage signer={signer} user={user} />;
 };
 
 export default Profile;
