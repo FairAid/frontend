@@ -1,42 +1,187 @@
-.home,
-body {
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Global Styles */
+body,
+html {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
     width: 100vw;
-    height: 100vw;
-    background: linear-gradient(90deg, #26A2A8 22%, #2463C2 89%);
-    margin: 0px;
+    height: 100%;
+    background: linear-gradient(90deg, #6A82FB 22%, #9D50BB 89%);
+    /* 파란색-보라색 그라데이션 */
 }
 
 .welcome {
     padding: 20px;
-    font-size: 30px;
-}
-
-h1 {
-    margin-top: 0px;
+    font-size: 25px;
+    color: white !important;
 }
 
 
+/* Home Body */
 .home-Body {
     display: flex;
-    justify-content: space-between;
-    font-size: 20px;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.3);
+    /* 반투명 화이트 */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Intro Section */
 .intro {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     margin-left: 20px;
-
-
 }
 
 .intro-sentence {
     margin-top: 0px;
-    color: white;
+    color: #f0f0f0;
+    font-size: 40px;
 }
 
-.intro-img {
-    margin-right: 40px;
-    margin-left: 40px;
+/* Home.css */
+
+/* 슬라이드 이미지 스타일 */
+.slide-image {
+    width: 50%;
+    /* 가로 크기를 부모 컨테이너에 맞게 조정 */
+    height: auto;
+    /* 이미지의 비율을 유지하면서 높이를 자동 조정 */
+    max-height: 500px;
+    /* 최대 높이 설정, 필요에 따라 조정 가능 */
+    object-fit: cover;
+    /* 이미지가 컨테이너를 채우도록 조정, 비율 유지 */
+    border-radius: 10px;
+    /* 이미지 모서리를 둥글게 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    /* 그림자 효과 */
+    transition: transform 0.3s ease;
+    /* 마우스 오버 시 변환 효과 적용 */
+}
+
+/* 마우스 오버 시 이미지 확대 효과 */
+.slide-image:hover {
+    transform: scale(1.05);
+    /* 5% 확대 */
+}
+
+
+/* About Section */
+.about-section {
+    margin-top: 180px;
+    padding: 50px 20px;
+    background-color: #EAECEE;
+    /* 부드러운 라이트 그레이 */
+    text-align: center;
+}
+
+.about-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333333;
+}
+
+.about-section p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    color: #333333;
+}
+
+/* Features Section */
+.features-section {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #FAFAFA;
+    /* 밝은 그레이 화이트 */
+}
+
+.features-section h2 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #444444;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.feature-item {
+    background-color: #FFFFFF;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 모든 요소를 가운데 정렬 */
+    text-align: center;
+}
+
+.feature-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #444444;
+}
+
+.feature-item p {
+    font-size: 1rem;
+    color: #444444;
+    margin-bottom: 10px;
+    /* 이미지와 텍스트 간의 간격을 조정 */
+}
+
+/* Footer */
+.footer {
+    padding: 20px;
+    background-color: #34495E;
+    /* 다크 네이비 */
+    color: #FFFFFF;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.feature-img {
+    width: 50px;
+    /* 원하는 크기로 설정 */
+    height: auto;
+    margin-top: 10px;
+    /* 이미지와 텍스트 간의 간격을 조정 */
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+        /* 위로 10px 이동 */
+    }
+
+    100% {
+        transform: translateY(0);
+        /* 원래 위치로 돌아옴 */
+    }
+}
+
+/* 이미지에 애니메이션 적용 */
+.feature-img {
+    width: 100px;
+    height: auto;
+    margin-top: 10px;
+    animation: float 3s ease-in-out infinite;
+    /* 애니메이션 적용 */
 }

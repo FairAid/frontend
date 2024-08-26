@@ -14,7 +14,7 @@ function AuthNavbar(props) {
                         <img className="logo-img" src="https://gateway.pinata.cloud/ipfs/QmQyXKEngRuTBjELPZ9eFsnpfyjR43u5t3sy7DWWUhoxVh" alt="Logo" />
                     </li>
                     <li className="Name">
-                        FairAid
+                        RefuPass
                     </li>
                     <li>
                         <Link to="/">Home</Link>
