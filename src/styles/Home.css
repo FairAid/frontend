@@ -14,7 +14,9 @@ html {
 }
 
 .welcome {
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
     font-size: 25px;
     color: white !important;
 }

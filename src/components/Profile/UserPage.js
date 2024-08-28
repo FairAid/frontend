@@ -165,7 +165,7 @@ const UserPage = ({ signer, user }) => {
           <label className='Label'>
             Enter password
             <input
-              type="text"
+              type="password"
               value={seedPhrase}
               onChange={(e) => setSeedPhrase(e.target.value)}
             />

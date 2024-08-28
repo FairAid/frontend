@@ -12,20 +12,16 @@
 
 .modal-content {
   display: flex;
-  justify-content: center;
   flex-direction: column;
   align-items: center;
-  background-color: #C2CFCF;
-  border-radius: 10px;
-  border: 1px solid #888;
-  /* Maximum width to ensure it doesn't get too wide */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Optional: Add a shadow for depth */
-  border-radius: 8px;
+  width: 80%;
+  max-width: 1200px;
+  margin: 20px auto;
   padding: 20px;
-  width: 60%;
-  height: 300px;
-  /* Optional: Rounded corners */
+  background-color: rgba(255, 255, 255, 0.3);
+  /* 반투명 화이트 */
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content h2 {
@@ -37,6 +33,7 @@ input {
   height: 30px;
   padding: 3px;
   margin-top: 20px;
+  border-radius: 10px;
 }
 
 .error-popup {

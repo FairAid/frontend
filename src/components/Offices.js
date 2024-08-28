@@ -19,35 +19,40 @@ function Offices() {
     }, []);
 
     return (
-        <div style={{ padding: "50px" }}>
-            <h3>Check out all of the Immigration Offices that provide FairAid IDs.</h3>
+        <div className="container">
+            <h2 className="header">
+                Check out all of the Immigration Offices that provide FairAid IDs.
+            </h2>
+            <h2 className="subheader">
+                Current Number of Offices : 3
+            </h2>
 
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className="table">
                 <thead>
                     <tr>
-                        <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Issuer Name</th>
-                        <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Address</th>
-                        <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>Contact</th>
-                        <th style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>View on Etherscan</th>
+                        <th>Issuer Name</th>
+                        <th>Address</th>
+                        <th>Contact</th>
+                        <th>View on Etherscan</th>
                     </tr>
                 </thead>
                 <tbody>
                     {addresses.map((key, index) => (
-                        <tr>
-                            <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }} key={index}>{jsonFile[key].Name}</td>
-                            <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }} key={index}>{key}</td>
-                            <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }} key={index}>
+                        <tr key={index}>
+                            <td>{jsonFile[key].Name}</td>
+                            <td>{key}</td>
+                            <td>
                                 <p>Email: {jsonFile[key].Email}</p>
                                 <p>Phone: {jsonFile[key].Phone}</p>
                                 <p>Address: {jsonFile[key].Address}</p>
                             </td>
-                            <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }} key={index}>
-                                <div style={{ marginTop: '4px', textAlign: 'center' }}>
+                            <td>
+                                <div className="view-button-container">
                                     <a
                                         href={`https://sepolia.arbiscan.io/address/${key}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        style={{ textDecoration: 'none', color: 'white', backgroundColor: '#007bff', padding: '10px 20px', borderRadius: '5px' }}
+                                        className="view-button"
                                     >
                                         View
                                     </a>
