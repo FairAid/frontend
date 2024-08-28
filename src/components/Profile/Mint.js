@@ -216,7 +216,7 @@ const Mint = ({signer}) => {
                 >
                     &times;
                 </span>
-                <h3>Edit Details</h3>
+                <h3>Enter personal details</h3>
                 <div className="form-container">
                     <div className="left-column">
                         <label>

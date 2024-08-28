@@ -13,6 +13,7 @@
 }
 
 .modal-content {
+  position: relative;
   background-color: #fefefe;
   padding: 20px;
   border: 1px solid #888;
