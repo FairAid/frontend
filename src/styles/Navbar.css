@@ -44,7 +44,7 @@ ul li a {
     margin-left: auto;
     margin-right: auto;
     text-decoration: none;
-    color: #221d1d;
+    color: white;
     padding: 10px 50px;
     font-weight: bold;
     font-size: 18px;
@@ -69,7 +69,7 @@ ul li a:hover {
     font-weight: 600;
     margin-right: auto;
     /* Reduced margin for better spacing */
-    color: #221d1d;
+    color: white
 }
 
 /* Mobile responsiveness */
