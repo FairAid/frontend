@@ -1,3 +1,27 @@
+.admin-container {
+  padding: 30px;
+}
+
+.deploy-section {
+  float: left;
+  padding: 20px;
+  font-size: 30px;
+}
+
+.mint-section {
+  float: right;
+  padding: 20px;
+  font-size: 15px;
+}
+
+.id-list-section {
+  background-color: white;
+  padding: 100px;
+  font-size: 15px;
+}
+
+/* 아래는 기존에 주어진 CSS 코드입니다 */
+
 .modal {
   position: fixed;
   z-index: 1;
@@ -17,11 +41,8 @@
   padding: 20px;
   border: 1px solid #888;
   width: auto;
-  /* Maximum width to ensure it doesn't get too wide */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Optional: Add a shadow for depth */
   border-radius: 8px;
-  /* Optional: Rounded corners */
 }
 
 .modal-content h2 {
@@ -34,13 +55,11 @@
   left: 50%;
   transform: translateX(-50%);
   background-color: #f44336;
-  /* Red background for error */
   color: white;
   padding: 16px;
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  /* Ensure it appears above other content */
   max-width: 80%;
   text-align: center;
   font-size: 16px;
@@ -50,15 +69,6 @@
   margin: 0;
 }
 
-.id-card {
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: rgb(101, 175, 199);
-  width: 300px;
-  text-align: left;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
 .id-card-content p {
   margin: 10px 0;
@@ -116,7 +126,6 @@
 .left-column,
 .right-column {
   width: 47%;
-  /* Each column takes up about half the width */
 }
 
 label {

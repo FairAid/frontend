@@ -4,12 +4,12 @@ import { createHash } from 'crypto-browserify';
 import EC from 'elliptic';
 import CryptoJS from 'crypto-js';
 import '../../styles/AdminPage.css';
-import process from 'process';  
+import process from 'process';
 
 const ec = new EC.ec('p256');
 
 const ListOfIDs = ({ signer }) => {
-    const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
+    const contractAddress = "0x05cD72Ff4cdc6045B59434cD5453779A2Ae7f9cf";
     const [addressesList, setAddressesList] = useState([]);
     const [tokenIdList, setTokenIdList] = useState({});
     const [idExpirationList, setIdExpirationList] = useState({});
@@ -109,7 +109,7 @@ const ListOfIDs = ({ signer }) => {
         getIdList();
     }, []);
 
-    const editID = async() => {
+    const editID = async () => {
         if (!tokenIdList || !contractInst) {
             return;
         }
@@ -136,23 +136,23 @@ const ListOfIDs = ({ signer }) => {
                 "name": "FairAid DID",
                 "image": image,
                 "attributes": {
-                  "Name": name,
-                  "Place of birth": birthplace,
-                  "Issued country": issuedCountry,
-                  "Issued authority": issuedAuthority,
-                  "Date of birth": birthDate,
-                  "Passport number": passportNumber,
-                  "Sex": sex,
-                  "Registration address": address,
-                  "Date of issue": issueDate,
-                  "Date of expiry": expiryDate
+                    "Name": name,
+                    "Place of birth": birthplace,
+                    "Issued country": issuedCountry,
+                    "Issued authority": issuedAuthority,
+                    "Date of birth": birthDate,
+                    "Passport number": passportNumber,
+                    "Sex": sex,
+                    "Registration address": address,
+                    "Date of issue": issueDate,
+                    "Date of expiry": expiryDate
                 }
             }
 
             if (!keyPair || !updated_json) {
                 alert("Cannot generate key pair and encrypt data.");
                 setShowEditModal(false);
-                return; 
+                return;
             }
 
             const encrypted_json = encryptData(updated_json, keyPair.getPublic());
@@ -182,15 +182,15 @@ const ListOfIDs = ({ signer }) => {
             await updateURI.wait();
             setShowEditModal(false);
             alert(`ID number ${currentTokenID} updated successfully! New URI: https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`);
-        } catch(error) {
+        } catch (error) {
             console.log("Update error: ", error);
             setUpdateError(
                 'Error updating DID.'
-              );
-              setTimeout(() => {
+            );
+            setTimeout(() => {
                 setUpdateError('');
-              }, 7000);
-              return;
+            }, 7000);
+            return;
         }
     }
 
@@ -228,7 +228,7 @@ const ListOfIDs = ({ signer }) => {
         if (!seedPhrase) return;
         const keypair = generateKeyPairFromSeed(seedPhrase);
         setKeyPair(keypair);
-    
+
         setShowPasswordModal(false);
         setShowEditModal(true);
     };
@@ -239,23 +239,23 @@ const ListOfIDs = ({ signer }) => {
 
     const encryptData = (data, publicKey) => {
         const encryptValue = (value) => {
-          const sharedKey = keyPair.derive(publicKey).toString(16);
-          const encrypted = CryptoJS.AES.encrypt(value, sharedKey).toString();
-          return encrypted;
+            const sharedKey = keyPair.derive(publicKey).toString(16);
+            const encrypted = CryptoJS.AES.encrypt(value, sharedKey).toString();
+            return encrypted;
         };
-    
+
         const encryptedData = {};
         for (const key in data) {
-          if (typeof data[key] === 'object' && data[key] !== null) {
-            encryptedData[key] = encryptData(data[key], publicKey);
-          } else {
-            encryptedData[key] = encryptValue(data[key]);
-          }
+            if (typeof data[key] === 'object' && data[key] !== null) {
+                encryptedData[key] = encryptData(data[key], publicKey);
+            } else {
+                encryptedData[key] = encryptValue(data[key]);
+            }
         }
         return encryptedData;
     };
 
-    const revokeID = async() => {
+    const revokeID = async () => {
         if (!tokenIdList || !contractInst) {
             return;
         }
@@ -270,15 +270,15 @@ const ListOfIDs = ({ signer }) => {
             await burnID.wait();
             setShowRevokeModal(false);
             alert(`ID number ${currentTokenID} was revoked!`);
-        } catch(error) {
+        } catch (error) {
             console.log("Revoke error: ", error);
             setRevokeError(
                 'Error! Could not revoke ID.'
-              );
-              setTimeout(() => {
+            );
+            setTimeout(() => {
                 setRevokeError('');
-              }, 7000);
-              return;
+            }, 7000);
+            return;
         }
     }
 
@@ -309,8 +309,8 @@ const ListOfIDs = ({ signer }) => {
                                 <button onClick={() => handleRevokeID(tokenIdList[address])}>Revoke ID</button>
                             </td>
                             <td style={{ textAlign: 'center', padding: '10px', border: '1px solid black' }}>
-                                {idExpirationList[address] !== undefined 
-                                    ? (idExpirationList[address] ? "Expired" : "Not expired") 
+                                {idExpirationList[address] !== undefined
+                                    ? (idExpirationList[address] ? "Expired" : "Not expired")
                                     : "Loading..."}
                             </td>
                         </tr>
@@ -332,57 +332,57 @@ const ListOfIDs = ({ signer }) => {
 
             {showPasswordModal && (
                 <div className="modal">
-                <div className="modal-content">
-                    <span 
-                    onClick={handleClosePasswordModal}
-                    style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        fontSize: '20px',
-                        cursor: 'pointer'
-                    }}
-                    >
-                        &times;
-                    </span>
-                    <label>
-                    Enter password
-                    <input 
-                        type="text" 
-                        value={seedPhrase} 
-                        onChange={(e) => setSeedPhrase(e.target.value)} 
-                    />
-                    </label>
-                    <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
-                </div>
+                    <div className="modal-content">
+                        <span
+                            onClick={handleClosePasswordModal}
+                            style={{
+                                position: 'absolute',
+                                top: '10px',
+                                right: '10px',
+                                fontSize: '20px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            &times;
+                        </span>
+                        <label>
+                            Enter password
+                            <input
+                                type="text"
+                                value={seedPhrase}
+                                onChange={(e) => setSeedPhrase(e.target.value)}
+                            />
+                        </label>
+                        <button className='submit-button' onClick={handleSeedPhraseSubmit}>Submit</button>
+                    </div>
                 </div>
             )}
 
             {showRevokeModal && (
                 <div className="modal">
-                <div className="modal-content">
-                    <span 
-                    onClick={handleCloseRevokeModal}
-                    style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        fontSize: '20px',
-                        cursor: 'pointer'
-                    }}
-                    >
-                        &times;
-                    </span>
-                    <h3>Are you sure you want to revoke your ID?</h3>
-                    <button className='submit-button' onClick={revokeID}>Yes, revoke ID</button>
-                </div>
+                    <div className="modal-content">
+                        <span
+                            onClick={handleCloseRevokeModal}
+                            style={{
+                                position: 'absolute',
+                                top: '10px',
+                                right: '10px',
+                                fontSize: '20px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            &times;
+                        </span>
+                        <h3>Are you sure you want to revoke your ID?</h3>
+                        <button className='submit-button' onClick={revokeID}>Yes, revoke ID</button>
+                    </div>
                 </div>
             )}
 
             {showEditModal && (
                 <div className="edit-id-modal">
                     <div className="edit-id-modal-content">
-                        <span 
+                        <span
                             onClick={handleCloseEditModal}
                             style={{
                                 position: 'absolute',
@@ -399,48 +399,48 @@ const ListOfIDs = ({ signer }) => {
                             <div className="left-column">
                                 <label>
                                     Image
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={imageRef}
                                         placeholder="Image"
                                     />
                                 </label>
                                 <label>
                                     Name
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={nameRef}
                                         placeholder="Name"
                                     />
                                 </label>
-                                <label> 
+                                <label>
                                     Place of birth
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={birthplaceRef}
                                         placeholder="Birthplace"
                                     />
                                 </label>
                                 <label>
                                     Issued country
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={issuedCountryRef}
                                         placeholder="Issued country"
                                     />
                                 </label>
                                 <label>
                                     Issued Authority
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={issuedAuthorityRef}
                                         placeholder="Issued authority"
                                     />
                                 </label>
                                 <label>
                                     Birth Date
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={birthDateRef}
                                         placeholder="Birth Date"
                                     />
@@ -449,45 +449,45 @@ const ListOfIDs = ({ signer }) => {
                             <div className="right-column">
                                 <label>
                                     Passport Number
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={passportNumberRef}
                                         placeholder="Passport Number"
                                     />
                                 </label>
                                 <label>
                                     Sex
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={sexRef}
                                         placeholder="Sex"
                                     />
                                 </label>
                                 <label>
                                     Address
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={addressRef}
                                         placeholder="Address"
                                     />
                                 </label>
                                 <label>
                                     Issue Date
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={issueDateRef}
                                         placeholder="Issue Date"
                                     />
                                 </label>
                                 <label>
                                     Expiry Date
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         ref={expiryDateRef}
                                         placeholder="Expiry Date"
                                     />
                                 </label>
-                                <button style={{ float: "right"}} onClick={editID}>Submit</button>
+                                <button style={{ float: "right" }} onClick={editID}>Submit</button>
                             </div>
                         </div>
                     </div>
