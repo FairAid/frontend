@@ -7,20 +7,20 @@ function VerifyID() {
     const [userAddress, setUserAddress] = useState('');
     const [tokenID, setTokenID] = useState('');
     const [issuerAddress, setIssuerAddress] = useState('');
-    const [issuerOffice, setIssuerOffice] = useState('');  
+    const [issuerOffice, setIssuerOffice] = useState('');
     const [transactionHash, setTransactionHash] = useState('');
     const [showTable, setShowTable] = useState(false);
 
     const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
 
-    const fetchTableContent = async() => {
+    const fetchTableContent = async () => {
         try {
             const artifactUrl = "https://lavender-peculiar-gamefowl-279.mypinata.cloud/ipfs/QmcEUv17JcLE9SxRbSyhmByx5C7oHh7Z1zAT1rQXZkuuq5";
             const artifact = await fetch(artifactUrl).then(response => response.json());
             const { abi } = artifact;
             const provider = new ethers.JsonRpcProvider('https://arb-sepolia.g.alchemy.com/v2/R_b4eb8IhQuhtGRqEPJJoHe_FUmQ4pAD');
             const contract = new ethers.Contract(contractAddress, abi, provider);
-            
+
             // Fetch token ID and issuer address
             const token = await contract.findDID(String(userAddress));
             const issuer = await contract.owner();
@@ -64,7 +64,7 @@ function VerifyID() {
         setShowTable(false);
         setUserAddress(inputAddress);
     };
-    
+
     React.useEffect(() => {
         if (userAddress) {
             fetchTableContent();
@@ -72,13 +72,13 @@ function VerifyID() {
     }, [userAddress]);
 
     return (
-        <div style={{padding: "70px"}}>
-            <h1>Verify a FairAid ID.</h1>
+        <div style={{ padding: "70px" }}>
+            <h1>Verify a RefuPass Passport.</h1>
             <div>
                 <h2>Enter ID owner's MetaMask address: </h2>
-                <input 
-                    type="text" 
-                    value={inputAddress} 
+                <input
+                    type="text"
+                    value={inputAddress}
                     onChange={(e) => setInputAddress(e.target.value)}
                 />
                 <button onClick={handleSubmit}>Submit</button>
@@ -107,9 +107,9 @@ function VerifyID() {
 
             {transactionHash && showTable && (
                 <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                    <a 
-                        href={`https://sepolia.arbiscan.io/tx/${transactionHash}`} 
-                        target="_blank" 
+                    <a
+                        href={`https://sepolia.arbiscan.io/tx/${transactionHash}`}
+                        target="_blank"
                         rel="noopener noreferrer"
                         style={{ textDecoration: 'none', color: 'white', backgroundColor: '#007bff', padding: '10px 20px', borderRadius: '5px' }}
                     >

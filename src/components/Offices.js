@@ -21,10 +21,7 @@ function Offices() {
     return (
         <div className="container">
             <h2 className="header">
-                Check out all of the Immigration Offices that provide FairAid IDs.
-            </h2>
-            <h2 className="subheader">
-                Current Number of Offices : 3
+                Check out all of the Immigration Offices that provide Passport IDs.
             </h2>
 
             <table className="table">
@@ -39,8 +36,22 @@ function Offices() {
                 <tbody>
                     {addresses.map((key, index) => (
                         <tr key={index}>
-                            <td>{jsonFile[key].Name}</td>
-                            <td>{key}</td>
+                            <td style={{ fontSize: '30px' }}>
+                                {(() => {
+                                    const parts = jsonFile[key].Name.split(' ');
+                                    return (
+                                        <>
+                                            {parts[0]}
+                                            <br />
+                                            {parts.slice(1).join(' ')}
+                                        </>
+                                    );
+                                })()}
+                            </td>
+
+                            <td>
+                                {key}
+                            </td>
                             <td>
                                 <p>Email: {jsonFile[key].Email}</p>
                                 <p>Phone: {jsonFile[key].Phone}</p>

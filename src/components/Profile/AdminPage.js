@@ -1,21 +1,23 @@
+import React from "react";
 import Deploy from "./Deploy";
 import Mint from "./Mint";
 import ListOfIDs from "./IDlist";
 import '../../App.css';
-import '../../styles/UserPage.css'; 
+import '../../styles/UserPage.css';
+import '../../styles/AdminPage.css'; // 새로운 CSS 파일 추가
 
-const AdminPage = ({signer, user}) => {
+const AdminPage = ({ signer, user }) => {
     return (
-        <div style={{padding: "30px"}}>
+        <div className="admin-container">
             <h1>Manage IDs</h1>
-            <div style={{ float: "left", padding: '20px', fontSize: '30px' }}>
+            <div className="deploy-section">
                 <Deploy signer={signer} user={user}/>
             </div>
-            <div style={{ float: "right", padding: '20px', fontSize: '15px' }}>
+            <div className="mint-section">
                 <Mint signer={signer} user={user}/>
             </div>
-            <div style={{ padding: '100px', fontSize: '15px' }}>
-                <ListOfIDs signer={signer}/>
+            <div className="id-list-section">
+                <ListOfIDs signer={signer} user={user}/>
             </div>
         </div>
     );
