@@ -4,15 +4,15 @@ import ListOfIDs from "./IDlist";
 import '../../App.css';
 import '../../styles/UserPage.css'; 
 
-const AdminPage = ({signer}) => {
+const AdminPage = ({signer, user}) => {
     return (
         <div style={{padding: "30px"}}>
             <h1>Manage IDs</h1>
             <div style={{ float: "left", padding: '20px', fontSize: '30px' }}>
-                <Deploy signer={signer}/>
+                <Deploy signer={signer} user={user}/>
             </div>
             <div style={{ float: "right", padding: '20px', fontSize: '15px' }}>
-                <Mint signer={signer}/>
+                <Mint signer={signer} user={user}/>
             </div>
             <div style={{ padding: '100px', fontSize: '15px' }}>
                 <ListOfIDs signer={signer}/>

@@ -8,8 +8,10 @@ import process from 'process';
 
 const ec = new EC.ec('p256');
 
-const ListOfIDs = ({ signer }) => {
-    const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
+const ListOfIDs = ({signer, user}) => {
+    const storageContractAddress = `0x${process.env.REACT_STORAGE_CONTRACT}`;
+    // const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e";
+    const [contractAddress, setContractAddress] = useState('');
     const [addressesList, setAddressesList] = useState([]);
     const [tokenIdList, setTokenIdList] = useState({});
     const [idExpirationList, setIdExpirationList] = useState({});
@@ -47,6 +49,23 @@ const ListOfIDs = ({ signer }) => {
             });
 
             const { abi } = artifact;
+
+            // Fetching deployed contract address
+            const storageArtifactURL = "https://gateway.pinata.cloud/ipfs/QmUXNEUQzL7B5UWYjN4rpHoWQq1CmCoKkDpzoCasasRqu6"
+            const storageArtifact = await fetch(storageArtifactURL).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json;
+            });
+            
+            const { storageAbi } = storageArtifact;
+            
+            const storageContract = new ethers.Contract(storageContractAddress, storageAbi, signer);
+            const getDeployedContract = await storageContract.getDeployedContract(user);
+            await getDeployedContract.wait();
+            setContractAddress(String(getDeployedContract));
+
             const contract = new ethers.Contract(contractAddress, abi, signer);
             setContractInst(contract);
 

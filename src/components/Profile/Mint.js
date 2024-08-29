@@ -8,13 +8,15 @@ import '../../styles/AdminPage.css';
 
 const ec = new EC.ec('p256');
 
-const Mint = ({signer}) => {
+const Mint = ({signer, user}) => {
   const [seedPhrase, setSeedPhrase] = useState('');
   const [keyPair, setKeyPair] = useState(null);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [mintError, setMintError] = useState('');
-  const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e"
+  const [contractAddress, setContractAddress] = useState('');
+  const storageContractAddress = `0x${process.env.REACT_STORAGE_CONTRACT}`;
+  // const contractAddress = "0xd94464119aDe5Ce776E1B426319b5ce865E9E00e"
 
   // Input variables
   const userPubkeyRef = useRef(null);
@@ -76,6 +78,22 @@ const Mint = ({signer}) => {
           return response.json();
       });
       const { abi } = artifact;
+
+      // Fetching deployed contract address
+      const storageArtifactURL = "https://gateway.pinata.cloud/ipfs/QmUXNEUQzL7B5UWYjN4rpHoWQq1CmCoKkDpzoCasasRqu6"
+      const storageArtifact = await fetch(storageArtifactURL).then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+      });
+
+      const { storageAbi } = storageArtifact;
+      const storageContract = new ethers.Contract(storageContractAddress, storageAbi, signer);
+      const getDeployedContract = await storageContract.getDeployedContract(user);
+      await getDeployedContract.wait();
+      setContractAddress(String(getDeployedContract));
+
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
       const encrypted_json = encryptData(data, keyPair.getPublic());

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { ethers } from "ethers";
+import process from 'process';  
 
-const Deploy = ({signer}) => {
+
+const Deploy = ({signer, user}) => {
+    const storageContractAddress = `0x${process.env.REACT_STORAGE_CONTRACT}`;
     const [deployedContractAddress, setDeployedContractAddress] = useState('');
     const [isDeploying, setIsDeploying] = useState(false);
 
@@ -30,7 +33,19 @@ const Deploy = ({signer}) => {
 
             setDeployedContractAddress(contract.target);
             setIsDeploying(false);
-            // Debug: the alert doesn't show the contract address when deployed for the first time
+
+            const storageArtifactURL = "https://gateway.pinata.cloud/ipfs/QmUXNEUQzL7B5UWYjN4rpHoWQq1CmCoKkDpzoCasasRqu6"
+            const storageArtifact = await fetch(storageArtifactURL).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            });
+            const { storageAbi } = storageArtifact;
+            const storageContract = new ethers.Contract(storageContractAddress, storageAbi, signer);
+            const storeDeployedContract = await storageContract.setDeployedContract(user, contract.target);
+            await storeDeployedContract.wait();
+
             alert("Contract deployed at: " +  String(contract.target));
             console.log("DeplpoyedContractAddress: ", contract.target);
         } catch (error) {
