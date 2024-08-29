@@ -212,7 +212,7 @@ const Mint = ({ signer }) => {
             </span>
             <div className="modal-password">
               <label>
-                Enter password
+                Set Your Passsword
                 <input
                   type="password"
                   value={seedPhrase}
@@ -279,21 +279,20 @@ const Mint = ({ signer }) => {
                 </label>
                 <label>
                   Issued Authority
-                  <input
-                    type="text"
-                    ref={issuedAuthorityRef}
-                    placeholder="Issued authority"
-                  />
+                  <select ref={issuedAuthorityRef}>
+                    <option value="Seoul Immigration Office">Seoul Immigration Office</option>
+                    <option value="Busan Immigration Office">Busan Immigration Office</option>
+                    <option value="Incheon Immigration Office">Incheon Immigration Office</option>
+                  </select>
                 </label>
               </div>
               <div className="right-column">
                 <label>
                   Sex
-                  <input
-                    type="text"
-                    ref={sexRef}
-                    placeholder="Sex"
-                  />
+                  <select ref={sexRef}>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
                 </label>
                 <label>
                   Address

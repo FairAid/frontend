@@ -117,8 +117,27 @@ label {
     flex-direction: column;
 }
 
-input {
-    width: 80%;
+input,
+select {
+    width: 100%;
     padding: 8px;
     margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+select {
+    margin-top: 20px;
+    -webkit-appearance: none;
+    /* Safari와 Chrome에서의 기본 화살표 제거 */
+    -moz-appearance: none;
+    /* Firefox에서의 기본 화살표 제거 */
+    appearance: none;
+    /* 기본 화살표 제거 */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23333' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 10px;
 }

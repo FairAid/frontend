@@ -5,10 +5,12 @@ import CryptoJS from 'crypto-js';
 import '../../App.css';
 import '../../styles/UserPage.css';
 import { ethers } from 'ethers';
+import { QRCodeCanvas } from 'qrcode.react';  // QRCodeCanvas 사용
 
 const ec = new EC.ec('p256');
 
 const UserPage = ({ signer, user }) => {
+  const [showQRCode, setShowQRCode] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState('');
   const [decryptedData, setDecryptedData] = useState(null);
   const [keyPair, setKeyPair] = useState(null);
@@ -17,8 +19,13 @@ const UserPage = ({ signer, user }) => {
   const [decryptError, setDecryptError] = useState('');
   const [isIDOpen, setIsIDOpen] = useState(false);
   const [decryptedImage, setDecryptedImage] = useState(null);
+  const [didUri, setDidUri] = useState(''); // DID URI 상태 추가
 
   const contractAddress = "0x05cD72Ff4cdc6045B59434cD5453779A2Ae7f9cf";
+
+  const handleQRCodeClick = () => {
+    setShowQRCode(!showQRCode); // QR 코드 표시 여부를 토글
+  };
 
   const generateKeyPairFromSeed = (seed) => {
     const hash = createHash('sha256').update(seed).digest('hex');
@@ -105,6 +112,8 @@ const UserPage = ({ signer, user }) => {
 
         const decryptedImage = decryptValue(jsonData.image, keyPair);
         setDecryptedImage(decryptedImage);
+
+        setDidUri(uri); // DID URI 저장
       }
     } catch (error) {
       console.error('An error occurred during decryption:', error);
@@ -217,6 +226,19 @@ const UserPage = ({ signer, user }) => {
               <div className="issued-author">
                 <p style={{ fontSize: '25px', }}><strong>{decryptedData.attributes["Issued authority"]}</strong></p>
               </div>
+              {/* QR 코드 버튼 */}
+              <button className='qr-button' onClick={handleQRCodeClick}>
+                {showQRCode ? 'Hide QR Code' : 'Show QR Code'}
+              </button>
+              {/* QR 코드 추가 */}
+              {showQRCode && didUri && (
+                <div className='qr-box'>
+                  <div className="qr-code-box">
+                    <QRCodeCanvas value={didUri} size={128} />
+                    <p>Scan this QR code to verify <br></br>the NFT PassPort</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

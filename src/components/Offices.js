@@ -21,7 +21,7 @@ function Offices() {
     return (
         <div className="container">
             <h2 className="header">
-                Check out all of the Immigration Offices that provide FairAid IDs.
+                Check out all of the Immigration Offices that provide Passport IDs.
             </h2>
 
             <table className="table">

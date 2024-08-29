@@ -73,7 +73,7 @@ function VerifyID() {
 
     return (
         <div style={{ padding: "70px" }}>
-            <h1>Verify a FairAid ID.</h1>
+            <h1>Verify a RefuPass Passport.</h1>
             <div>
                 <h2>Enter ID owner's MetaMask address: </h2>
                 <input

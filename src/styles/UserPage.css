@@ -210,3 +210,8 @@ input {
 .back-button:hover {
   background-color: rgb(101, 175, 199);
 }
+
+.qr-box {
+  padding: 10px;
+  background-color: white;
+}
